@@ -1,0 +1,11 @@
+{
+  "name": "agentic-ai-engineering",
+  "description": "Decision compression for agentic AI engineering. Equips coding agents with senior engineer, staff engineer, tech lead, and CTO-level expertise for building production-grade agentic AI products. Covers architecture design, context engineering, multi-agent orchestration, evaluation strategy, and deployment readiness.",
+  "version": "0.1.0",
+  "author": {
+    "name": "deepak-karkala"
+  },
+  "homepage": "https://github.com/deepak-karkala/agentic-ai-engineering",
+  "repository": "https://github.com/deepak-karkala/agentic-ai-engineering",
+  "license": "MIT"
+}
