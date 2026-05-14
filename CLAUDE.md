@@ -41,6 +41,24 @@ The plugin includes two specialist subagents:
 
 Subagents return structured findings. Synthesize their output and present it in the parent skill's output format. Do not present raw subagent dumps to the user.
 
+## Config Field Consumption Map
+
+Skills read from `.agentic/config.yml`. Each field and which skills consume it:
+
+| Field | Required by | Optional improvement for | Notes |
+|---|---|---|---|
+| `eval_assets_path` | `agent-eval-design` (audit mode) | — | Only hard dependency in the plugin |
+| `design_docs_path` | — | `agentic-system-design`, `multi-agent-orchestration` | Skills read existing docs before generating recommendations |
+| `artifact_output_path` | — | `agentic-system-design` (HTML artifact) | Falls back to `.agentic/artifacts/` if absent |
+| `adr_path` | — | `agentic-system-design` | Provides ADR context for architecture decisions |
+| `agent_source_path` | — | `deployment-readiness` | Enables code-level analysis during readiness review |
+| `trace_log_path` | — | `agent-eval-design` | Enables trace inspection for regression analysis |
+| `glossary_path` | — | Deferred workflow-support skills | Reserved for `agentic-ubiquitous-language`; ignored by Milestone 1 skills |
+
+**Contract stability:** The schema is `version: "1"`. Skills must read fields they use and ignore fields they don't. Do not add new fields to the schema without running setup again and bumping the version comment.
+
+**Future workflow-support skills** (glossary hardening, plan-to-issues, handoff) should read `glossary_path`, `design_docs_path`, and `artifact_output_path` from `.agentic/config.yml` using the same pattern as existing skills. They do not need to change the schema.
+
 ## Portability Note
 
 The skill and agent content in this plugin is host-agnostic. The Claude Code-specific behavior (namespaced commands, subagent invocation, artifact file writes, `.agentic/config.yml` reads) is the thin adapter layer. If porting to another host, adapt this file and AGENTS.md; the `skills/` and `agents/` content transfers unchanged.
