@@ -51,8 +51,8 @@ Skills read from `.agentic/config.yml`. Each field and which skills consume it:
 | `design_docs_path` | — | `agentic-system-design`, `multi-agent-orchestration` | Skills read existing docs before generating recommendations |
 | `artifact_output_path` | — | `agentic-system-design` (HTML artifact) | Falls back to `.agentic/artifacts/` if absent |
 | `adr_path` | — | `agentic-system-design` | Provides ADR context for architecture decisions |
-| `agent_source_path` | — | `deployment-readiness` | Enables code-level analysis during readiness review |
-| `trace_log_path` | — | `agent-eval-design` | Enables trace inspection for regression analysis |
+| `agent_source_path` | — | — | Reserved for future skills; no Milestone 1 skill reads this |
+| `trace_log_path` | — | — | Reserved for future skills; no Milestone 1 skill reads this |
 | `glossary_path` | — | Deferred workflow-support skills | Reserved for `agentic-ubiquitous-language`; ignored by Milestone 1 skills |
 
 **Contract stability:** The schema is `version: "1"`. Skills must read fields they use and ignore fields they don't. Do not add new fields to the schema without running setup again and bumping the version comment.

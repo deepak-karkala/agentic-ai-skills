@@ -14,6 +14,6 @@ The user wants to design a new agentic system. Begin by understanding:
 3. Any existing infrastructure, tools, or APIs the agent must use
 4. Scale, latency, and cost constraints
 
-Then run the agentic-system-design skill workflow, using the agent-systems-architect subagent for architecture decomposition if the design is non-trivial.
+Then run the agentic-system-design skill workflow. Do not delegate to the agent-systems-architect subagent here — that subagent is for reviewing existing architectures, not greenfield design. Handle the design entirely within the agentic-system-design skill.
 
 Produce a structured architecture plan. If the design warrants it, generate the architecture-review HTML artifact.
