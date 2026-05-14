@@ -1,0 +1,7 @@
+# Local-only planning workspace — never committed
+docs/
+ideation/
+references/
+
+# OS artifacts
+.DS_Store
