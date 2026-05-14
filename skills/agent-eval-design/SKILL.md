@@ -95,20 +95,11 @@ Apply the **Six-Dimension Scorecard**. Assign a baseline target and measurement 
 
 ### Step 4 — Select trajectory metrics
 
-For multi-step agents, outcome-only scoring misses the most important signal: whether the agent took the right path.
+For multi-step agents, outcome-only scoring misses the most important signal: whether the agent took the right path. Six metric types: Exact Match, In-Order Match, Any-Order Match, Precision, Recall, Single-Tool Use.
 
-| Metric type | When to use | Measurement |
-|---|---|---|
-| **Exact Match** | Single correct action sequence exists; deterministic task | Score 1 if full sequence matches, 0 otherwise |
-| **In-Order Match** | Correct steps exist but intermediate steps can vary; order matters | Score fraction of required steps taken in correct order |
-| **Any-Order Match** | Steps must all happen but order is flexible | Score fraction of required steps taken regardless of order |
-| **Precision** | Agent must not take unnecessary steps | Steps taken that were correct / total steps taken |
-| **Recall** | Agent must not miss required steps | Required steps taken / total required steps |
-| **Single-Tool Use** | A specific tool must (or must not) be called | Binary: was the tool called? |
+→ Full metric table with when-to-use and composition rules: [references/trajectory-metrics.md](references/trajectory-metrics.md)
 
-**Combine Precision + Recall** into an F1 score for open-ended tasks where both over-action and under-action are errors.
-
-**Production rule:** If your evals only measure final output and not the path, you will miss reward-hacking — agents that reach the right answer through wrong steps that happen to produce the correct output by coincidence.
+**Combine Precision + Recall** into F1 for open-ended tasks. **Production rule:** Outcome-only evals miss reward-hacking. Always add at least one trajectory metric for any multi-step task.
 
 ---
 
@@ -196,16 +187,9 @@ Agents produce different outputs on repeated runs. Single-run evals produce nois
 
 ### Step 9 — Flag eval anti-patterns
 
-Check the design against the **eval anti-pattern table**:
+Check the design against six named anti-patterns: Reward-Hacking Evals, Outcome-Only Scoring, Uncalibrated LLM Judge, Eval-Production Gap, No Adversarial Coverage, Stale Golden Set.
 
-| Anti-pattern | Signal | Fix |
-|---|---|---|
-| **Reward-Hacking Evals** | Agent scores well on evals but fails on production variants | Check if agent has learned to pattern-match eval inputs; add distribution shift tests |
-| **Outcome-Only Scoring** | Evals measure final answer but not the path | Add trajectory metrics for any multi-step task |
-| **Uncalibrated LLM Judge** | Judge agrees with human < 80% of time | Calibrate on labeled examples before deploying judge |
-| **Eval-Production Gap** | CI/CD evals pass; production degrades on new input types | Add production sampling and drift detection; expand golden set from production traffic |
-| **No Adversarial Coverage** | Eval suite has only happy-path tests | Add adversarial set: injection attempts, malformed inputs, tool failures, permission boundary tests |
-| **Stale Golden Set** | Goldens haven't been updated since initial launch | Audit golden set when agent capabilities change; remove outdated examples |
+→ Full anti-pattern table with diagnostic signals, fixes, and most-common-by-stage index: [references/eval-anti-patterns.md](references/eval-anti-patterns.md)
 
 ---
 

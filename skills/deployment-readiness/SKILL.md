@@ -60,46 +60,17 @@ Ask:
 
 ### Step 2 — Run the Pre-Launch Gate Checklist
 
-Complete this checklist before any production launch decision. A "no" on any shaded item is a launch blocker.
+Complete this checklist before any production launch decision. Items marked with * are launch blockers. Five categories: Architecture, Guardrails, HITL and Autonomy, Observability, Compliance.
 
-**Architecture (blockers marked with *)**
+→ Full checklist: [references/pre-launch-checklist.md](references/pre-launch-checklist.md)
 
-- [ ] * Workers are stateless and disposable; all state is externalized
-- [ ] * Long-running workflows checkpoint and can resume after crash
-- [ ] * Circuit breakers are enforced outside agent code (not by the agent itself)
-- [ ] * High-risk mutations are idempotent with explicit compensation actions
-- [ ] Agent roles are separated by permission scope — write-capable agents do not share processes with read-only agents
-- [ ] Interactive and async work use separate queues
-
-**Guardrails (*)**
-
-- [ ] * Seven-layer guardrail stack is present (see Step 3)
-- [ ] * Tool gateway intercepts every tool call before execution
-- [ ] * Cost budget circuit breaker is set and enforced at the orchestration layer
-- [ ] * Loop detection (max steps 20–50) is enforced, not advisory
-- [ ] Input validation covers intent, jailbreak, and PII before any LLM call
-- [ ] Tool output validation catches prompt injection before observation returns to agent
-
-**HITL and Autonomy (*)**
-
-- [ ] * Risk tier classification is assigned to every action type (Low / Medium / High / Critical)
-- [ ] * HITL mode is defined for each risk tier (see Step 4)
-- [ ] * Glass-box preamble is shown to reviewers (not prose summary — see Step 4)
-- [ ] Approval SLAs are defined and enforced; timeouts escalate, not block
-- [ ] Rollback mechanism has been tested
-
-**Observability (*)**
-
-- [ ] * MELT instrumentation is in place (Metrics, Events, Logs, Traces)
-- [ ] * Full trace includes session, agent, LLM call, tool execution, guardrail spans
-- [ ] * Session replay is available for debugging (reconstruct full execution)
-- [ ] Production sampling and drift detection are configured
-
-**Compliance (context-dependent)*
-
-- [ ] Regulatory classification is confirmed (see Step 7)
-- [ ] Audit trail meets retention requirement for applicable regulation
-- [ ] If handling PII: pseudonymization architecture prevents GDPR/retention conflict
+**Summary of blockers to verify first:**
+- Workers stateless; state externalized
+- Circuit breakers enforced outside agent code
+- Cost budget cap configured at orchestration layer
+- Risk tier assigned to every action type
+- MELT instrumentation in place with session replay
+- Audit trail meets applicable retention requirement
 
 ---
 
@@ -249,16 +220,13 @@ Session (root)
 
 ### Step 7 — Apply regulatory baseline
 
-Determine which regulations apply and their minimum requirements:
+Determine which regulations apply and confirm minimum requirements. Key applicability triggers:
+- **EU AI Act (Aug 2026):** healthcare, credit scoring, employment screening, law enforcement → 10-year audit trail + human oversight capability
+- **GDPR / CCPA:** agent stores personal data → Article 17 erasure applies; pseudonymization required if retention > erasure window
+- **HIPAA:** agent touches PHI → Business Associate status; 6-year audit retention
+- **NIST AI RMF:** US federal or enterprise procurement → Govern / Map / Measure / Manage framework
 
-| Regulation | Applies when | Minimum requirement |
-|---|---|---|
-| **EU AI Act (Art. 6, Aug 2026)** | Healthcare decisions, credit scoring, employment screening, law enforcement | Human oversight capability (understand, monitor, halt, override); 10-year audit trail |
-| **GDPR / CCPA** | Agent stores or processes personal data | Memory is personal data; Article 17 erasure right applies; pseudonymization required if retention > erasure window |
-| **HIPAA** | Agent touches Protected Health Information | Business Associate status; 6-year audit retention; PHI access logging mandatory |
-| **NIST AI RMF** | US federal or enterprise context | Govern (accountability chain), Map (delegation chains), Measure (continuous eval), Manage (circuit breakers, rollback) |
-
-**GDPR / EU AI Act conflict resolution**: EU AI Act requires 10-year retention; GDPR Article 17 requires erasure on request. Pseudonymization architecture: store events with pseudonymous IDs; separate key store maps pseudonym → real user; erasure deletes the key, preserving audit structure.
+→ Full regulation table and GDPR/EU AI Act conflict resolution: [references/regulatory-baseline.md](references/regulatory-baseline.md)
 
 ---
 
