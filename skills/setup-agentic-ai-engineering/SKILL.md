@@ -5,8 +5,8 @@ description: >
   writing .agentic/config.yml with the paths that downstream skills read.
   Use when starting a new agentic AI project, when a skill reports missing
   config, or when the user asks to configure the plugin for this repo.
-  Invoke with /agentic-ai-engineering:setup-agentic-ai-engineering.
-  Do NOT invoke automatically — this is an explicit one-time initializer.
+  Invoke explicitly with /agentic-ai-engineering:setup-agentic-ai-engineering.
+disable-model-invocation: true
 allowed-tools:
   - Read
   - Write

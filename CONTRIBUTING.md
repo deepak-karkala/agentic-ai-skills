@@ -43,6 +43,7 @@ description: >
 ### Preferred optional fields
 
 ```yaml
+disable-model-invocation: true   # set on skills that must be user-invoked only (e.g. setup, destructive actions)
 allowed-tools:
   - Read
   - Write
@@ -54,6 +55,11 @@ metadata:
   category: <architecture|reliability|production|setup>
   version: "0.1.0"
 ```
+
+**`disable-model-invocation: true` is required** for any skill that:
+- Writes files or modifies repo state (setup skills, initializers)
+- Has side effects that should only happen when the user explicitly requests them
+- Could create confusing premature initialization if auto-invoked
 
 ---
 
@@ -176,6 +182,58 @@ description: >
    Mirrors the primary skill it invokes.>
 ---
 ```
+
+---
+
+## HTML Artifact Rendering Contract
+
+HTML templates live in `templates/html/`. Skills that generate artifacts load the template, fill all placeholders, and write the result to the configured artifact output path.
+
+### Placeholder syntax
+
+Templates use two placeholder forms:
+
+**Scalar substitution** — replace `{{VARIABLE}}` with a single string value:
+```
+{{AGENT_NAME}}  →  "Support Resolution Agent"
+{{VERDICT}}     →  "Caution"
+```
+
+**Block repetition** — replace `{{#SECTION}}...{{/SECTION}}` with zero or more rendered copies of the inner block, one per data item:
+```
+{{#RISK_ROWS}}
+<tr><td>{{RISK_TITLE}}</td>...</tr>
+{{/RISK_ROWS}}
+```
+If the data list is empty, output nothing (no empty rows, no placeholder markers).
+
+### Rendering approach
+
+Skills must use **plain string replacement** — no external template engine required.
+
+Steps:
+1. Read the template file as a string.
+2. Replace each `{{VARIABLE}}` marker with its value. Escape any `<`, `>`, or `&` characters in user-provided values with HTML entities.
+3. For each `{{#SECTION}}...{{/SECTION}}` block: locate the block, render one copy per item in the data list (replacing inner `{{VARIABLE}}` markers for each item), then replace the original block with the concatenated result.
+4. Write the resulting string to the artifact output path.
+
+Do not introduce Mustache, Handlebars, Jinja, or any other template library. The plain string replacement contract keeps skills dependency-free and portable across hosts.
+
+### CSS badge classes
+
+Templates use named CSS classes for colored badges. Use the correct class for the value:
+
+| Semantic meaning | Class |
+|---|---|
+| Good / low risk / reversible | `green` |
+| Caution / medium risk / correctable | `yellow` |
+| Bad / high risk / irreversible | `red` |
+| Informational / neutral | `blue` |
+| Plugin-branded / default accent | `purple` |
+
+### Unreplaced placeholders
+
+Before writing the artifact, scan for any remaining `{{` markers. If any are found, either substitute a safe default or remove the surrounding element. Never write `{{VARIABLE}}` literally to the output file.
 
 ---
 
