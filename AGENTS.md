@@ -409,6 +409,32 @@ For non-Claude Code hosts without plugin loading: place skills in the host's equ
 
 ---
 
+## Cross-Lane Routing: Ambiguous Requests
+
+Some requests sit at the boundary between the strategy lane (Tasks 9–12) and the technical lane (M1 skills). Use this table to route without ambiguity.
+
+| Request | Correct skill | Routing rationale |
+|---|---|---|
+| "Should we build an agent for this?" | `agentic-opportunity-framing` | Fit evaluation, not architecture design |
+| "We decided to build — how should we architect it?" | `agentic-system-design` | Decision is made; architecture begins here |
+| "Is this use case worth building a product around?" | `agentic-product-strategy` | Product viability, not workflow fit |
+| "We have a working agent — is it ready to deploy?" | `deployment-readiness` | Production gate, not strategy |
+| "Our margins are bad — is it an inference cost problem or a pricing problem?" | `agentic-economics-and-moats` | Economics first; if it reveals an architecture problem, route to `agentic-system-design` after |
+| "We want to add HITL to our agent — how?" | `deployment-readiness` | HITL gate is a deployment/guardrail design question, not a governance question |
+| "Our compliance team is asking what governance we have" | `agentic-governance-and-adoption` | Governance posture and controls documentation |
+| "How do we deploy our agent to production safely?" | `deployment-readiness` | Technical deployment readiness, not governance maturity |
+| "How do we grow from 5 pilot users to the whole org?" | `agentic-governance-and-adoption` | Adoption sequence is governance/change management |
+| "How do we evaluate our agent's accuracy?" | `agent-eval-design` | Eval design, not economics or governance |
+| "What moat does our eval dataset give us?" | `agentic-economics-and-moats` | Moat analysis, even though the trigger mentions eval |
+| "We keep using 'agent' and 'workflow' interchangeably" | `agentic-ubiquitous-language` | Terminology alignment precedes all other design work |
+| "Design a data flywheel for our agent" | `agentic-economics-and-moats` | MAPE loop is an economics/moat concept, not an eval or architecture concept |
+| "What regulatory requirements apply before we can go live?" | `agentic-governance-and-adoption` | Regulatory mapping is governance work |
+| "We're handing this project to a new team" | `agentic-handoff` | Continuity document, not governance or strategy |
+
+**Tie-breaking rule:** When a request touches both strategy and technical lanes, prefer the strategy-lane skill if the decision hasn't been made yet (pre-build); prefer the technical-lane skill if the system is already being built or deployed (post-decision).
+
+---
+
 ## Anti-Patterns
 
 Do not:
@@ -417,3 +443,4 @@ Do not:
 - Let `agent-evals-auditor` make architecture recommendations
 - Let `agent-systems-architect` assess eval quality
 - Bypass `setup-agentic-ai-engineering` when a skill explicitly requires `eval_assets_path`
+- Route strategy-lane requests to technical-lane skills (e.g., routing "should we build this?" to `agentic-system-design`)
