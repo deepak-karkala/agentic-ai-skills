@@ -99,7 +99,7 @@ Write the issue list. Format as a Markdown checklist at minimum; see [Issue Temp
 
 If the user wants GitHub-ready output, use the structured format with title, description, acceptance criteria, and labels. Otherwise the Markdown checklist is sufficient.
 
-Default output location: write to `design_docs_path/issues.md` if `design_docs_path` is configured; otherwise present inline and offer to write to `docs/implementation-issues.md`.
+Default output location: write to `design_docs_path/issues.md` if `design_docs_path` is configured; otherwise write to `.agentic/artifacts/implementation-issues.md` and note the path to the user.
 
 ---
 

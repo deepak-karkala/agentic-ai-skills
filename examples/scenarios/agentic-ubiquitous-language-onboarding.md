@@ -50,7 +50,7 @@ Resolution: Always qualify — use "ticket escalation" for the domain concept an
 
 ### Glossary artifact written
 
-`docs/agentic-glossary.md` (default path; `glossary_path` not configured)
+`.agentic/artifacts/agentic-glossary.md` (default path; `glossary_path` not configured)
 
 **Terms defined:** 8 (4 standard normalized, 3 project-specific, 1 disambiguation rule)  
 **Flags:** 1 unresolved overload ("escalation") resolved with qualification rule
@@ -58,7 +58,7 @@ Resolution: Always qualify — use "ticket escalation" for the domain concept an
 ### User message
 
 ```
-Glossary written to docs/agentic-glossary.md.
+Glossary written to .agentic/artifacts/agentic-glossary.md.
 
 8 terms defined. One important disambiguation:
 - "escalation" means different things in your domain vs. agentic AI. 

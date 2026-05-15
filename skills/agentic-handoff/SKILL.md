@@ -134,7 +134,7 @@ Provide a concrete, ordered list of what the incoming engineer or team should do
 
 ### Step 7 — Write the handoff document
 
-Write the document to `artifact_output_path/handoff-<system-name>-<date>.md` if `artifact_output_path` is configured. Otherwise write to `docs/handoff-<system-name>.md` and note the path.
+Write the document to `artifact_output_path/handoff-<system-name>-<date>.md` if `artifact_output_path` is configured. Otherwise write to `.agentic/artifacts/handoff-<system-name>-<date>.md` and note the path.
 
 Use the handoff document format from [Handoff Document Template](references/handoff-template.md).
 
@@ -152,7 +152,7 @@ After writing the document:
 
 ## Output Contract
 
-- **Primary output:** Handoff Markdown document at `artifact_output_path/handoff-<name>-<date>.md` or `docs/handoff-<name>.md`
+- **Primary output:** Handoff Markdown document at `artifact_output_path/handoff-<name>-<date>.md` or `.agentic/artifacts/handoff-<name>-<date>.md`
 - **In-conversation summary:** file path, linked artifacts, blockers, first next action
 - **Does not produce:** architecture decisions, code, eval plans, new design documents
 

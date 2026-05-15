@@ -101,7 +101,7 @@ For each ambiguity, propose a resolution: adopt one meaning, split into two dist
 
 ### Step 6 — Produce the glossary artifact
 
-Write the glossary to the path from `glossary_path` in `.agentic/config.yml`. If absent, write to `docs/agentic-glossary.md` and note the path to the user.
+Write the glossary to the path from `glossary_path` in `.agentic/config.yml`. If absent, write to `.agentic/artifacts/agentic-glossary.md` and note the path to the user.
 
 Use the artifact format:
 
@@ -127,7 +127,7 @@ After writing the glossary:
 
 ## Output Contract
 
-- **Primary output:** Committed glossary Markdown file at `glossary_path` or `docs/agentic-glossary.md`
+- **Primary output:** Committed glossary Markdown file at `glossary_path` or `.agentic/artifacts/agentic-glossary.md`
 - **In-conversation summary:** term count, unresolved flags, recommended next step
 - **Does not produce:** architecture recommendations, eval plans, code
 

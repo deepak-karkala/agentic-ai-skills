@@ -63,7 +63,7 @@ Sequencing: supervisor scaffold blocks all workers; workers can be implemented i
 ### Step 6 — Report
 
 ```
-Issue list written to docs/implementation-issues.md.
+Issue list written to .agentic/artifacts/implementation-issues.md.
 
 Counts: foundation: 3, implementation: 6, eval: 6, rollout: 4 — total: 19
 
