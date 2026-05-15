@@ -26,6 +26,12 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Choose an agent orchestration pattern | `agentic-system-design` | `/agentic-ai-engineering:agentic-arch-review` |
 | Design multi-agent topology or handoff contracts | `multi-agent-orchestration` | `/agentic-ai-engineering:agentic-plan` |
 | Design tool interfaces, MCP wiring, or agent communication | `multi-agent-orchestration` | auto |
+| Design the control loop and step sequence for a single-agent workflow | `single-agent-workflow-design` | auto |
+| Select the right single-agent pattern (chaining vs. routing vs. ReAct) | `single-agent-workflow-design` | auto |
+| Design retry, fallback, and recovery logic for an agent workflow | `single-agent-workflow-design` | auto |
+| Design tool contracts, schemas, and action granularity | `tool-interface-design` | auto |
+| Fix tool selection errors (agent calling the wrong tool) | `tool-interface-design` | auto |
+| Design MCP tool manifests and capability scoping | `tool-interface-design` | auto |
 
 ### Context and memory
 
@@ -44,6 +50,16 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Audit an existing eval suite | `agent-eval-design` | `/agentic-ai-engineering:agentic-evals` |
 | Choose grader types or scorecard dimensions | `agent-eval-design` | `/agentic-ai-engineering:agentic-evals` |
 | Set up regression tests from production failures | `agent-eval-design` | `/agentic-ai-engineering:agentic-evals` |
+
+### Observability and monitoring
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Design observability strategy (MELT, tracing, session replay) | `agent-observability` | auto |
+| Debug production agent failures using traces | `agent-observability` | auto |
+| Configure circuit breakers (cost, loop, tool failure) | `agent-observability` | auto |
+| Connect production monitoring to the eval improvement flywheel | `agent-observability` | auto |
+| Select an observability platform (LangSmith, Langfuse, Datadog) | `agent-observability` | auto |
 
 ### Production and deployment
 
@@ -361,6 +377,61 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 
 ---
 
+### `tool-interface-design`
+
+**Trigger on:**
+- "How should I design the tools for this agent?"
+- "Should this be one tool or three smaller tools?"
+- "The agent keeps calling the wrong tool — how do I fix this?"
+- "Write tool schemas for this agent"
+- "Design MCP tool contracts"
+- "How do I expose this API as an agent tool?"
+- "What should the tool descriptions say?"
+
+**Do not trigger on:**
+- Which agent receives which tools in a multi-agent system → use `multi-agent-orchestration`
+- Runtime security enforcement for tool calls (sandbox, gateway) → use `deployment-readiness`
+- High-level architecture decisions → use `agentic-system-design`
+- Generating runnable tool stubs → use `agentic-prototype`
+
+---
+
+### `single-agent-workflow-design`
+
+**Trigger on:**
+- "Design the control loop for this single-agent workflow"
+- "Should I use prompt chaining or a ReAct loop for this?"
+- "How should retries and fallback steps be structured?"
+- "Design the step sequence for this agent"
+- "Which single-agent pattern fits this workflow?"
+- "Map the state transitions for this workflow"
+
+**Do not trigger on:**
+- Whether to use a single agent vs. multiple agents → use `agentic-system-design` first
+- Multi-agent topology and handoff contracts → use `multi-agent-orchestration`
+- Tool contract design → use `tool-interface-design`
+- Generating runnable scaffold → use `agentic-prototype`
+
+---
+
+### `agent-observability`
+
+**Trigger on:**
+- "What should I trace for this agent?"
+- "How do I debug agent failures in production?"
+- "Design the telemetry strategy for this agent"
+- "Set up session replay for this agent"
+- "Configure circuit breakers for this agent"
+- "How do I connect production traces to our evals?"
+- "What's the minimum observability I need before going to production?"
+
+**Do not trigger on:**
+- High-level MELT checklist as part of deployment readiness gate → use `deployment-readiness`
+- Eval scorecard and grader design → use `agent-eval-design`
+- Agent architecture → use `agentic-system-design`
+
+---
+
 ## Subagent Routing
 
 Subagents run in isolated context and are invoked by skills when specialist analysis is needed.
@@ -435,6 +506,26 @@ Some requests sit at the boundary between the strategy lane (Tasks 9–12) and t
 | "We're handing this project to a new team" | `agentic-handoff` | Continuity document, not governance or strategy |
 
 **Tie-breaking rule:** When a request touches both strategy and technical lanes, prefer the strategy-lane skill if the decision hasn't been made yet (pre-build); prefer the technical-lane skill if the system is already being built or deployed (post-decision).
+
+### Phase 3 Technical Skill Overlap Zones
+
+These requests sit at the boundaries between the three new Phase 3 skills and M1 skills:
+
+| Request | Correct skill | Routing rationale |
+|---|---|---|
+| "How should I design the tools for this agent?" | `tool-interface-design` | Contract design, schema, ACI principles |
+| "Which agent gets which tools in my supervisor-worker system?" | `multi-agent-orchestration` | Tool assignment is topology — not contract design |
+| "How do I sandbox or gate tool calls at runtime?" | `deployment-readiness` | Runtime security enforcement, not contract design |
+| "Design the step sequence for this single-agent workflow" | `single-agent-workflow-design` | Control flow design for a decided architecture |
+| "Should I use a single agent or multiple agents?" | `agentic-system-design` | Architecture decision precedes workflow design |
+| "How do I structure the state across agents?" | `multi-agent-orchestration` | Multi-agent state is topology/handoff, not single-agent workflow |
+| "What should I trace for this agent?" | `agent-observability` | Deep observability design |
+| "Is my agent production-ready?" | `deployment-readiness` | Production readiness gate — includes high-level MELT checklist |
+| "How do I improve my agent from production failures?" | `agent-observability` | Improvement flywheel design connects traces to evals |
+| "How do I design the eval graders?" | `agent-eval-design` | Grader design is eval work; observability provides the raw signal |
+| "What's the difference between TCR and GCR?" | `agent-observability` | KPI definitions are in observability context |
+| "The agent selects the wrong tool despite good descriptions" | `tool-interface-design` | Tool disambiguation via ACI non-use examples |
+| "The agent's prompt is too complex — too many tool categories" | `multi-agent-orchestration` | Prompt overload is a topology trigger (partition into workers) |
 
 ---
 
