@@ -143,12 +143,22 @@ Soft dependencies configured:
   design_docs_path: docs/architecture
   artifact_output_path: .agentic/artifacts
   adr_path: (not set — agentic-system-design will work without ADRs)
-  agent_source_path: (not set)
+  glossary_path: (not set — agentic-ubiquitous-language will create a new glossary if not set)
+  agent_source_path: (not set — no current skill requires this)
   trace_log_path: (not set — agent-eval-design will run in greenfield mode)
-  glossary_path: (not set)
 
-Skills that work fully now: all 5 flagship skills
-Skills that improve with more config: agentic-system-design (add adr_path), agent-eval-design (add trace_log_path)
+Skills that work fully now: all skills (14 skills across architecture, eval,
+deployment, context, workflow-support, and product-strategy categories)
+
+Skills that improve with more config:
+  - agentic-system-design: add adr_path to include ADR context in recommendations
+  - agent-eval-design: add trace_log_path to enable trace-based audit mode
+  - agentic-ubiquitous-language: add glossary_path to extend an existing glossary
+    rather than creating a new one
+  - agentic-to-issues, agentic-handoff: design_docs_path lets these skills read
+    your existing architecture docs before generating outputs
+  - All artifact-generating skills: artifact_output_path controls where outputs
+    are written (defaults to .agentic/artifacts/ if not set)
 
 To reconfigure, run /agentic-ai-engineering:setup-agentic-ai-engineering again.
 ```

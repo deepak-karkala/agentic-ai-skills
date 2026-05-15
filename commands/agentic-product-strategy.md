@@ -3,7 +3,9 @@ name: agentic-product-strategy
 description: >
   Defines product strategy for an agentic AI product. Scores the market entry
   wedge, defines the ICP, classifies the product architecture tier, selects
-  the GTM motion, and identifies moat-building opportunities.
+  the GTM motion, and identifies which moat layers to prioritize at a
+  strategic level. For quantified moat depth scoring and the data flywheel,
+  use agentic-economics-and-moats.
 ---
 
 # /agentic-product-strategy
@@ -17,7 +19,7 @@ Runs the full product strategy workflow:
 2. Scores the market entry wedge across 7 dimensions
 3. Classifies product architecture tier (thin wrapper → outcome-contracted)
 4. Selects the GTM motion (Land → Expand → Scale)
-5. Identifies moat-building opportunities
+5. Identifies which moat layers to prioritize (strategic-level — not quantified depth scoring)
 6. Produces a structured product strategy document
 
 ## When to use

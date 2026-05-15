@@ -5,7 +5,8 @@ description: >
   the market entry wedge against seven dimensions, defines the ICP (Ideal
   Customer Profile) as role + workflow + system, classifies the product
   architecture tier, selects the GTM motion (PLG → enterprise → regulated),
-  and identifies moat-building opportunities. Use when deciding where and how
+  and identifies which moat layers to prioritize at a strategic level (not
+  quantified depth scoring — use agentic-economics-and-moats for that). Use when deciding where and how
   to enter the market with an agent product, when positioning an agent system
   for a specific customer segment, when assessing whether the product
   architecture is defensible, or when planning the go-to-market sequence.
@@ -139,21 +140,23 @@ Match the GTM motion to the ICP and product architecture tier:
 
 ---
 
-### Step 6 — Identify moat-building opportunities
+### Step 6 — Identify moat layers to prioritize
 
-Assess which moat layers are accessible given the ICP, wedge, and architecture tier:
+This step identifies *which* moat layers are accessible and worth investing in given the ICP, wedge, and architecture tier. It does not score moat depth or model the data flywheel — that is the domain of `agentic-economics-and-moats`.
 
-| Moat layer | Description | How to build |
+For each of the five moat layers, state whether it is: immediately accessible, requires 6–12 months of investment, or not accessible given the current product and ICP.
+
+| Moat layer | Description | How to access |
 |---|---|---|
 | **Workflow position** | Agent is embedded in the critical path of a daily workflow | Ensure agent owns a step — not just assists |
-| **Context advantage** | Agent accumulates proprietary context (history, preferences, domain knowledge) that improves with use | Store and reuse user/org-specific context; build memory architecture |
-| **Domain SOP capture** | Agent encodes domain-specific standard operating procedures that generalist models lack | Interview domain experts; encode their judgment in prompts, guardrails, and eval |
-| **Evaluation advantage** | Agent builder has labeled data and eval infrastructure that competitors lack | Invest in eval early; treat labeled failures as proprietary data |
-| **Habit and spread** | Agent becomes a daily habit for the ICP; spreads within orgs via referral or visibility | Design for daily engagement; build team-level features that increase spread |
+| **Context advantage** | Agent accumulates proprietary context that improves with use | Store and reuse user/org-specific context; build memory architecture |
+| **Domain SOP capture** | Agent encodes expert SOPs generalist models lack | Interview domain experts; encode judgment in prompts and guardrails |
+| **Evaluation advantage** | Team has labeled data and eval infrastructure competitors lack | Invest in eval early; treat labeled failures as proprietary data |
+| **Habit and spread** | Agent is a daily habit; spreads within orgs organically | Design for daily engagement; build team-level features |
 
-**Priority:** Aim to build at least two moat layers in the first 12 months. A single moat layer is fragile; two creates a compounding advantage.
+**Output of this step:** A prioritized list of 2–3 moat layers to target in the first 12 months, with a one-line rationale for each. Not a depth score — that belongs in `agentic-economics-and-moats`.
 
-For detailed moat-building tactics, see `agentic-economics-and-moats`.
+**Boundary:** If the user asks "how deep is our moat?" or "score our moat across all layers," stop here and route to `agentic-economics-and-moats`. This step answers "which layers should we invest in?" not "how strong are we today?".
 
 ---
 

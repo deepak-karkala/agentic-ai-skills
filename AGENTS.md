@@ -104,7 +104,7 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Score the wedge dimensions for an agent product | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
 | Assess whether the product architecture is defensible | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
 | Select the GTM motion (PLG vs. enterprise vs. regulated) | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
-| Identify moat-building opportunities for an agent product | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
+| Identify which moat layers to prioritize (strategic, high-level) | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
 
 ### Economics and moats
 
@@ -113,7 +113,8 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Model unit economics for an agent product | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
 | Diagnose inference cost trap or margin deterioration | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
 | Design the data flywheel for an agent product | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
-| Assess moat depth and identify the shallowest layer | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
+| Score moat depth across all 5 layers and identify shallowest | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
+| Quantify how defensible the product is and for how long | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
 | Identify cost optimization levers (caching, routing, compression) | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
 
 ### Governance and adoption
@@ -425,7 +426,9 @@ Some requests sit at the boundary between the strategy lane (Tasks 9–12) and t
 | "How do we deploy our agent to production safely?" | `deployment-readiness` | Technical deployment readiness, not governance maturity |
 | "How do we grow from 5 pilot users to the whole org?" | `agentic-governance-and-adoption` | Adoption sequence is governance/change management |
 | "How do we evaluate our agent's accuracy?" | `agent-eval-design` | Eval design, not economics or governance |
-| "What moat does our eval dataset give us?" | `agentic-economics-and-moats` | Moat analysis, even though the trigger mentions eval |
+| "What moat does our eval dataset give us?" | `agentic-economics-and-moats` | Moat depth scoring — even when the trigger mentions eval |
+| "Which moat layers should we invest in this quarter?" | `agentic-product-strategy` | Strategic prioritization of moat layers — high-level, no scoring |
+| "How deep is our context advantage moat vs. competitors?" | `agentic-economics-and-moats` | Quantified moat depth assessment, not strategic prioritization |
 | "We keep using 'agent' and 'workflow' interchangeably" | `agentic-ubiquitous-language` | Terminology alignment precedes all other design work |
 | "Design a data flywheel for our agent" | `agentic-economics-and-moats` | MAPE loop is an economics/moat concept, not an eval or architecture concept |
 | "What regulatory requirements apply before we can go live?" | `agentic-governance-and-adoption` | Regulatory mapping is governance work |
