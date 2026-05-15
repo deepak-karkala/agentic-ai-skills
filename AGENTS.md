@@ -87,6 +87,15 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Capture architecture, eval, and deployment state before team transition | `agentic-handoff` | `/agentic-ai-engineering:agentic-handoff` |
 | Document open risks and next actions for an incoming engineer | `agentic-handoff` | `/agentic-ai-engineering:agentic-handoff` |
 
+### Opportunity evaluation
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Decide whether to build an agent for a workflow | `agentic-opportunity-framing` | `/agentic-ai-engineering:agentic-opportunity-framing` |
+| Score a use case for agentic AI fit | `agentic-opportunity-framing` | `/agentic-ai-engineering:agentic-opportunity-framing` |
+| Triage a backlog of automation ideas for agent-shaped workflows | `agentic-opportunity-framing` | `/agentic-ai-engineering:agentic-opportunity-framing` |
+| Assess build/don't-build for a proposed agent | `agentic-opportunity-framing` | `/agentic-ai-engineering:agentic-opportunity-framing` |
+
 ### Setup
 
 | User intent | Primary skill | Entry command |
@@ -249,6 +258,24 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 
 ---
 
+### `agentic-opportunity-framing`
+
+**Trigger on:**
+- "Should we build an agent for this workflow?"
+- "Is this use case agent-shaped?"
+- "Score this opportunity for agentic AI fit"
+- "Help us decide which workflows to automate with agents"
+- "Does this workflow need an agent or would a pipeline do?"
+- "Evaluate our use case backlog for agentic fit"
+
+**Do not trigger on:**
+- Architecture design (decision already made) → use `agentic-system-design`
+- Product wedge, ICP, or market strategy questions → use `agentic-product-strategy`
+- Reviewing an existing deployed agent → use `agentic-arch-review`
+- General "what is an agent?" with no specific use case — answer directly
+
+---
+
 ## Subagent Routing
 
 Subagents run in isolated context and are invoked by skills when specialist analysis is needed.
@@ -278,6 +305,7 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 | `/agentic-ai-engineering:agentic-to-issues` | `agentic-to-issues` | none |
 | `/agentic-ai-engineering:agentic-prototype` | `agentic-prototype` | none |
 | `/agentic-ai-engineering:agentic-handoff` | `agentic-handoff` | none |
+| `/agentic-ai-engineering:agentic-opportunity-framing` | `agentic-opportunity-framing` | none |
 
 ---
 
