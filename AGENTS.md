@@ -55,6 +55,38 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Plan rollout posture or bounded autonomy | `deployment-readiness` | `/agentic-ai-engineering:agentic-ops` |
 | Define observability and incident posture | `deployment-readiness` | `/agentic-ai-engineering:agentic-ops` |
 
+### Terminology and vocabulary
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Define or normalize agent system vocabulary | `agentic-ubiquitous-language` | auto |
+| Detect overloaded or ambiguous terms | `agentic-ubiquitous-language` | auto |
+| Produce a project glossary before design begins | `agentic-ubiquitous-language` | auto |
+
+### Implementation planning
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Break an architecture plan into engineering tickets | `agentic-to-issues` | `/agentic-ai-engineering:agentic-to-issues` |
+| Convert a design doc into an implementation issue list | `agentic-to-issues` | `/agentic-ai-engineering:agentic-to-issues` |
+| Sequence and slice work into foundation, implementation, eval, and rollout tasks | `agentic-to-issues` | `/agentic-ai-engineering:agentic-to-issues` |
+
+### Prototyping
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Generate a minimal scaffold for an agent pattern | `agentic-prototype` | `/agentic-ai-engineering:agentic-prototype` |
+| Validate a pattern choice with runnable code | `agentic-prototype` | `/agentic-ai-engineering:agentic-prototype` |
+| Show what a ReAct loop / HITL gate / LangGraph graph looks like in code | `agentic-prototype` | `/agentic-ai-engineering:agentic-prototype` |
+
+### Handoff and continuity
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Write a handoff doc for a project | `agentic-handoff` | `/agentic-ai-engineering:agentic-handoff` |
+| Capture architecture, eval, and deployment state before team transition | `agentic-handoff` | `/agentic-ai-engineering:agentic-handoff` |
+| Document open risks and next actions for an incoming engineer | `agentic-handoff` | `/agentic-ai-engineering:agentic-handoff` |
+
 ### Setup
 
 | User intent | Primary skill | Entry command |
@@ -149,6 +181,74 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 
 ---
 
+### `agentic-ubiquitous-language`
+
+**Trigger on:**
+- "Define our agent system vocabulary before we start"
+- "What do we mean by planner / worker / handoff in this system?"
+- "We keep arguing about what a tool is vs a skill"
+- "Write a glossary for this agent project"
+- "Normalize our terminology"
+- "What's the difference between memory and context in our system?"
+
+**Do not trigger on:**
+- General "what is an agent?" with no project context — answer directly without invoking this skill
+- Architecture design questions → use `agentic-system-design`
+- Eval strategy → use `agent-eval-design`
+
+---
+
+### `agentic-to-issues`
+
+**Trigger on:**
+- "Break this architecture plan into tickets"
+- "Convert this design into implementation tasks"
+- "Turn this review artifact into GitHub issues"
+- "Slice this plan into work items"
+- "What are the engineering tasks for this architecture?"
+- "Generate an issue list from this design doc"
+
+**Do not trigger on:**
+- Architecture not yet decided → use `agentic-system-design` first
+- Eval plan creation → use `agent-eval-design`
+- Project state capture for handoff → use `agentic-handoff`
+
+---
+
+### `agentic-prototype`
+
+**Trigger on:**
+- "Show me a minimal scaffold for this agent"
+- "Give me a starting point for this ReAct loop"
+- "Prototype the approval gate flow"
+- "What does this pattern look like in code?"
+- "Generate a LangGraph skeleton for this design"
+- "I want to validate this pattern before committing"
+
+**Do not trigger on:**
+- Architecture not yet chosen → use `agentic-system-design` first
+- Request for full production implementation — explicitly out of scope; note this and offer a prototype instead
+- Code review of existing implementation → use `agentic-system-design` or `multi-agent-orchestration`
+
+---
+
+### `agentic-handoff`
+
+**Trigger on:**
+- "Write a handoff doc for this project"
+- "Capture what the next engineer needs to know"
+- "I'm handing this off to another team"
+- "Document current state before I leave"
+- "Create a project summary for the incoming team"
+- "What should I document before wrapping up?"
+
+**Do not trigger on:**
+- Architecture decisions still open → use `agentic-system-design` first
+- Generating implementation tasks → use `agentic-to-issues`
+- Eval plan creation → use `agent-eval-design`
+
+---
+
 ## Subagent Routing
 
 Subagents run in isolated context and are invoked by skills when specialist analysis is needed.
@@ -175,6 +275,9 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 | `/agentic-ai-engineering:agentic-arch-review` | `agentic-system-design` | `agent-systems-architect` |
 | `/agentic-ai-engineering:agentic-evals` | `agent-eval-design` | `agent-evals-auditor` |
 | `/agentic-ai-engineering:agentic-ops` | `deployment-readiness` | none |
+| `/agentic-ai-engineering:agentic-to-issues` | `agentic-to-issues` | none |
+| `/agentic-ai-engineering:agentic-prototype` | `agentic-prototype` | none |
+| `/agentic-ai-engineering:agentic-handoff` | `agentic-handoff` | none |
 
 ---
 
