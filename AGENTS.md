@@ -106,6 +106,16 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Select the GTM motion (PLG vs. enterprise vs. regulated) | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
 | Identify moat-building opportunities for an agent product | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
 
+### Economics and moats
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Model unit economics for an agent product | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
+| Diagnose inference cost trap or margin deterioration | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
+| Design the data flywheel for an agent product | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
+| Assess moat depth and identify the shallowest layer | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
+| Identify cost optimization levers (caching, routing, compression) | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
+
 ### Setup
 
 | User intent | Primary skill | Entry command |
@@ -304,6 +314,24 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 
 ---
 
+### `agentic-economics-and-moats`
+
+**Trigger on:**
+- "Will our pricing survive at scale?"
+- "We're losing margin — I think inference costs are the problem"
+- "Model the unit economics for this agent product"
+- "How do we build a data flywheel?"
+- "Assess our moat depth"
+- "What cost optimizations should we prioritize?"
+
+**Do not trigger on:**
+- Product wedge and ICP strategy → use `agentic-product-strategy`
+- Technical architecture of the agent → use `agentic-system-design`
+- Workflow fit evaluation → use `agentic-opportunity-framing`
+- General financial modeling outside agentic AI context — answer directly
+
+---
+
 ## Subagent Routing
 
 Subagents run in isolated context and are invoked by skills when specialist analysis is needed.
@@ -335,6 +363,7 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 | `/agentic-ai-engineering:agentic-handoff` | `agentic-handoff` | none |
 | `/agentic-ai-engineering:agentic-opportunity-framing` | `agentic-opportunity-framing` | none |
 | `/agentic-ai-engineering:agentic-product-strategy` | `agentic-product-strategy` | none |
+| `/agentic-ai-engineering:agentic-economics-and-moats` | `agentic-economics-and-moats` | none |
 
 ---
 
