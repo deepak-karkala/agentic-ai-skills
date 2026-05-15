@@ -1,6 +1,6 @@
 # Local-only planning workspace — never committed
-docs/
-ideation/
+/docs/
+/ideation/
 /references/
 
 # OS artifacts

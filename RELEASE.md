@@ -9,7 +9,8 @@ The following criteria must all pass before a Milestone 1 GitHub release tag is 
 - [ ] `bash scripts/validate-plugin.sh` exits 0 with 0 failures
 - [ ] All skill folders follow the naming contract: kebab-case, `SKILL.md` present, `name` matches folder
 - [ ] All `references/` files linked from SKILL.md exist
-- [ ] All `agents/*.md` and `commands/*.md` have frontmatter with `name` and `description`
+- [ ] All `agents/*.md` have frontmatter with `name` and `description`
+- [ ] All `commands/*.md` have frontmatter with `description` (name not required for commands)
 
 ### Skill content gate (manual)
 
