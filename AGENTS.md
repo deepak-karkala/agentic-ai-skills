@@ -116,6 +116,16 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Assess moat depth and identify the shallowest layer | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
 | Identify cost optimization levers (caching, routing, compression) | `agentic-economics-and-moats` | `/agentic-ai-engineering:agentic-economics-and-moats` |
 
+### Governance and adoption
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Assess AI governance maturity for an agent deployment | `agentic-governance-and-adoption` | `/agentic-ai-engineering:agentic-governance-and-adoption` |
+| Define minimum governance controls for an agent | `agentic-governance-and-adoption` | `/agentic-ai-engineering:agentic-governance-and-adoption` |
+| Map regulatory requirements (EU AI Act, HIPAA, SOC 2) | `agentic-governance-and-adoption` | `/agentic-ai-engineering:agentic-governance-and-adoption` |
+| Design human-agent collaboration UX | `agentic-governance-and-adoption` | `/agentic-ai-engineering:agentic-governance-and-adoption` |
+| Plan the adoption sequence (pilot to org-wide) | `agentic-governance-and-adoption` | `/agentic-ai-engineering:agentic-governance-and-adoption` |
+
 ### Setup
 
 | User intent | Primary skill | Entry command |
@@ -332,6 +342,24 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 
 ---
 
+### `agentic-governance-and-adoption`
+
+**Trigger on:**
+- "What governance do we need for this agent?"
+- "What compliance requirements apply to this deployment?"
+- "Design the UX for our agent — we want doctors/users to trust it but not over-trust it"
+- "How do we roll this agent out to the organization?"
+- "Assess our governance maturity"
+- "What do we need before we can deploy to a regulated customer?"
+
+**Do not trigger on:**
+- Technical guardrail implementation → use `deployment-readiness`
+- Eval strategy → use `agent-eval-design`
+- Technical architecture → use `agentic-system-design`
+- Product strategy and wedge → use `agentic-product-strategy`
+
+---
+
 ## Subagent Routing
 
 Subagents run in isolated context and are invoked by skills when specialist analysis is needed.
@@ -364,6 +392,7 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 | `/agentic-ai-engineering:agentic-opportunity-framing` | `agentic-opportunity-framing` | none |
 | `/agentic-ai-engineering:agentic-product-strategy` | `agentic-product-strategy` | none |
 | `/agentic-ai-engineering:agentic-economics-and-moats` | `agentic-economics-and-moats` | none |
+| `/agentic-ai-engineering:agentic-governance-and-adoption` | `agentic-governance-and-adoption` | none |
 
 ---
 
