@@ -34,12 +34,15 @@ After writing an HTML artifact, tell the user the file path and suggest opening 
 
 ## Subagent Delegation
 
-The plugin includes two specialist subagents:
+The plugin includes specialist subagents. Subagents return structured findings — synthesize their output and present it in the parent skill's output format. Do not present raw subagent dumps to the user.
 
-- `agent-systems-architect`: delegate architecture decomposition tasks here when deeper isolated analysis is needed. Invoke from `agentic-system-design` or `multi-agent-orchestration` skills.
-- `agent-evals-auditor`: delegate eval audit tasks here. Invoke from `agent-eval-design` skill.
+**Milestone 1 subagents (active):**
+- `agent-systems-architect`: delegate architecture decomposition tasks here when deeper isolated analysis is needed. Invoke from `agentic-system-design` or `multi-agent-orchestration` skills. Never invoke for greenfield design.
+- `agent-evals-auditor`: delegate eval audit tasks here. Invoke from `agent-eval-design` skill. Only when eval artifacts exist.
 
-Subagents return structured findings. Synthesize their output and present it in the parent skill's output format. Do not present raw subagent dumps to the user.
+**Milestone 2 subagents (implemented when skills are built):**
+- `agent-product-strategist`: delegate product strategy and opportunity reviews here when non-trivial. Invoke from `agentic-opportunity-framing` or `agentic-product-strategy` skills.
+- `agent-artifact-designer`: delegate artifact composition here only when artifact complexity exceeds simple `{{VARIABLE}}` substitution. Gated — see M2 Task 17 in implementation plan.
 
 ## Config Field Consumption Map
 
@@ -48,16 +51,16 @@ Skills read from `.agentic/config.yml`. Each field and which skills consume it:
 | Field | Required by | Optional improvement for | Notes |
 |---|---|---|---|
 | `eval_assets_path` | `agent-eval-design` (audit mode) | — | Only hard dependency in the plugin |
-| `design_docs_path` | — | `agentic-system-design`, `multi-agent-orchestration` | Skills read existing docs before generating recommendations |
-| `artifact_output_path` | — | `agentic-system-design` (HTML artifact) | Falls back to `.agentic/artifacts/` if absent |
+| `design_docs_path` | — | `agentic-system-design`, `multi-agent-orchestration`, `single-agent-workflow-design`, `agentic-to-issues`, `agentic-prototype`, `agentic-handoff` | Skills read existing docs before generating recommendations |
+| `artifact_output_path` | — | All artifact-generating skills | Falls back to `.agentic/artifacts/` if absent |
 | `adr_path` | — | `agentic-system-design` | Provides ADR context for architecture decisions |
-| `agent_source_path` | — | — | Reserved for future skills; no Milestone 1 skill reads this |
-| `trace_log_path` | — | — | Reserved for future skills; no Milestone 1 skill reads this |
-| `glossary_path` | — | Deferred workflow-support skills | Reserved for `agentic-ubiquitous-language`; ignored by Milestone 1 skills |
+| `agent_source_path` | — | `tool-interface-design` | Reads existing tool/function code before generating interface recommendations |
+| `trace_log_path` | — | `agent-observability` | Reads trace logs for span coverage and KPI analysis |
+| `glossary_path` | — | `agentic-ubiquitous-language` | Reads existing glossary before generating or extending terminology |
 
-**Contract stability:** The schema is `version: "1"`. Skills must read fields they use and ignore fields they don't. Do not add new fields to the schema without running setup again and bumping the version comment.
+**Contract stability:** The schema is `version: "1"`. No new fields are required for Milestone 2 — all M2 skills consume existing fields. Skills must read fields they use and ignore fields they don't. Do not add new fields to the schema without running setup again and bumping the version comment.
 
-**Future workflow-support skills** (glossary hardening, plan-to-issues, handoff) should read `glossary_path`, `design_docs_path`, and `artifact_output_path` from `.agentic/config.yml` using the same pattern as existing skills. They do not need to change the schema.
+**Milestone 2 workflow-support skills** (`agentic-ubiquitous-language`, `agentic-to-issues`, `agentic-prototype`, `agentic-handoff`) read `glossary_path`, `design_docs_path`, and `artifact_output_path` respectively. No schema changes needed.
 
 ## Portability Note
 
