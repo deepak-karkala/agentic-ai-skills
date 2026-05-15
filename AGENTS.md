@@ -96,6 +96,16 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Triage a backlog of automation ideas for agent-shaped workflows | `agentic-opportunity-framing` | `/agentic-ai-engineering:agentic-opportunity-framing` |
 | Assess build/don't-build for a proposed agent | `agentic-opportunity-framing` | `/agentic-ai-engineering:agentic-opportunity-framing` |
 
+### Product strategy
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Define ICP and market entry wedge for an agent product | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
+| Score the wedge dimensions for an agent product | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
+| Assess whether the product architecture is defensible | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
+| Select the GTM motion (PLG vs. enterprise vs. regulated) | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
+| Identify moat-building opportunities for an agent product | `agentic-product-strategy` | `/agentic-ai-engineering:agentic-product-strategy` |
+
 ### Setup
 
 | User intent | Primary skill | Entry command |
@@ -276,6 +286,24 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 
 ---
 
+### `agentic-product-strategy`
+
+**Trigger on:**
+- "Where should we enter the market with this agent?"
+- "Define our ICP for this agent product"
+- "What's our wedge for this agentic AI product?"
+- "Are we building a thin wrapper?"
+- "What GTM motion should we use?"
+- "How do we make this agent product defensible?"
+
+**Do not trigger on:**
+- Workflow fit evaluation (is this use case agent-shaped?) → use `agentic-opportunity-framing`
+- Technical agent architecture design → use `agentic-system-design`
+- Detailed unit economics and moat depth → use `agentic-economics-and-moats`
+- General business strategy with no agentic AI context — answer directly
+
+---
+
 ## Subagent Routing
 
 Subagents run in isolated context and are invoked by skills when specialist analysis is needed.
@@ -306,6 +334,7 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 | `/agentic-ai-engineering:agentic-prototype` | `agentic-prototype` | none |
 | `/agentic-ai-engineering:agentic-handoff` | `agentic-handoff` | none |
 | `/agentic-ai-engineering:agentic-opportunity-framing` | `agentic-opportunity-framing` | none |
+| `/agentic-ai-engineering:agentic-product-strategy` | `agentic-product-strategy` | none |
 
 ---
 
