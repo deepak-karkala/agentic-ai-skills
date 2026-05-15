@@ -144,19 +144,22 @@ Soft dependencies configured:
   artifact_output_path: .agentic/artifacts
   adr_path: (not set — agentic-system-design will work without ADRs)
   glossary_path: (not set — agentic-ubiquitous-language will create a new glossary if not set)
-  agent_source_path: (not set — no current skill requires this)
-  trace_log_path: (not set — agent-eval-design will run in greenfield mode)
+  agent_source_path: (not set — tool-interface-design will write to .agentic/artifacts/ instead)
+  trace_log_path: (not set — agent-observability and agent-eval-design will run in greenfield mode)
 
-Skills that work fully now: all skills (14 skills across architecture, eval,
-deployment, context, workflow-support, and product-strategy categories)
+Skills that work fully now: all skills (17 skills across architecture, eval,
+deployment, context, workflow-support, product-strategy, and technical categories)
 
 Skills that improve with more config:
   - agentic-system-design: add adr_path to include ADR context in recommendations
   - agent-eval-design: add trace_log_path to enable trace-based audit mode
+  - agent-observability: add trace_log_path to read existing traces before designing strategy
   - agentic-ubiquitous-language: add glossary_path to extend an existing glossary
     rather than creating a new one
-  - agentic-to-issues, agentic-handoff: design_docs_path lets these skills read
-    your existing architecture docs before generating outputs
+  - agentic-to-issues, agentic-handoff, single-agent-workflow-design: design_docs_path
+    lets these skills read your existing architecture docs before generating outputs
+  - tool-interface-design: agent_source_path controls where the interface spec is written
+    (defaults to .agentic/artifacts/ if not set)
   - All artifact-generating skills: artifact_output_path controls where outputs
     are written (defaults to .agentic/artifacts/ if not set)
 

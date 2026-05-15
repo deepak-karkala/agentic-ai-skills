@@ -25,7 +25,7 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Decide between single-agent and multi-agent | `agentic-system-design` | `/agentic-ai-engineering:agentic-plan` |
 | Choose an agent orchestration pattern | `agentic-system-design` | `/agentic-ai-engineering:agentic-arch-review` |
 | Design multi-agent topology or handoff contracts | `multi-agent-orchestration` | `/agentic-ai-engineering:agentic-plan` |
-| Design tool interfaces, MCP wiring, or agent communication | `multi-agent-orchestration` | auto |
+| Design agent-to-agent communication, A2A protocols, or inter-agent contracts | `multi-agent-orchestration` | auto |
 | Design the control loop and step sequence for a single-agent workflow | `single-agent-workflow-design` | auto |
 | Select the right single-agent pattern (chaining vs. routing vs. ReAct) | `single-agent-workflow-design` | auto |
 | Design retry, fallback, and recovery logic for an agent workflow | `single-agent-workflow-design` | auto |
