@@ -1,5 +1,5 @@
 {
-  "_comment": "Canonical variable registry for all 5 artifact templates. Lists every scalar variable and block name per template. Used by validate-plugin.sh to verify rendered outputs have no unreplaced placeholders and that examples/outputs/ is populated.",
+  "_comment": "Canonical variable registry for all 5 artifact templates. Lists every scalar variable and block name per template. The validator (validate-plugin.sh section 9) checks that this file exists and that rendered outputs in examples/outputs/ are present and placeholder-clean. It does not parse this registry — this file serves as a human-readable reference for skill authors implementing template rendering.",
   "_rendering_contract": {
     "scalar_substitution": "{{VARIABLE_NAME}} is replaced with a plain string. HTML-sensitive characters (&, <, >) must be escaped in HTML templates.",
     "block_repetition_open": "{{#BLOCK_NAME}} marks the start of a repeated section.",

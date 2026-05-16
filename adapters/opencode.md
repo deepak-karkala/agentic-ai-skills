@@ -95,7 +95,7 @@ OpenCode does not support slash commands. Use the same natural language equivale
 | `/agentic-ai-engineering:agentic-governance-and-adoption` | "Design the governance and adoption plan for this agent" |
 | `/agentic-ai-engineering:setup-agentic-ai-engineering` | "Configure the plugin for this project" |
 
-Skills without a command wrapper (`agent-observability`, `single-agent-workflow-design`, `tool-interface-design`, `agentic-ubiquitous-language`) are auto-routed on Claude Code. On OpenCode, invoke them by describing the intent: "Design the observability strategy for this agent" — AGENTS.md routing will direct the model to the correct skill.
+Skills without a command wrapper (`multi-agent-orchestration`, `context-engineering-for-agents`, `agent-observability`, `single-agent-workflow-design`, `tool-interface-design`, `agentic-ubiquitous-language`) are auto-routed on Claude Code via their description field. On OpenCode, invoke them by describing the intent — AGENTS.md routing will direct the model to the correct skill. Examples: "Design the multi-agent topology for this system", "Design the context engineering strategy", "Design the observability strategy for this agent".
 
 ### Step 3 — Subagent fallback
 
