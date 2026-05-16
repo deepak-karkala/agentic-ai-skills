@@ -29,28 +29,27 @@ A general-purpose LLM produces:
 
 ### M1 plugin baseline
 
-With `agentic-system-design` + `agentic-to-issues`:
+With `agentic-system-design` only:
 - **Pattern selected:** Orchestrator-Workers (classifier worker + retrieval worker + drafter worker) with justification based on tool count (11 tools across 3 roles would pollute a single agent context)
 - **Autonomy tier:** L2 (Assisted) — draft response always requires human review before sending
 - **Tool boundary map:** 4 tools per worker, read-only retrieval, no write access until send gate
 - **Risk register:** 3 risks with severity and mitigation
-- **GitHub issues:** 12 issues generated with description, acceptance criteria, and skill reference
-- Issues cover: agent scaffold, tool implementations, eval suite setup, deployment configuration
+- **No issue generation:** M1 has no `agentic-to-issues` skill. Architecture output is conversational only; the team manually creates GitHub issues from the design notes.
 
-**Remaining gaps (M1):** Issues don't reference the specific single-agent workflow patterns inside each worker. No product strategy context. No observability design. Deployment readiness gate not included in the issue set.
+**Remaining gaps (M1):** No issue generation from the architecture (manual translation to tickets). No per-agent control flow pattern. No tool schemas. No product strategy context. No observability design.
 
 ### M2 plugin baseline
 
 With `agentic-system-design` + `single-agent-workflow-design` + `tool-interface-design` + `agentic-to-issues`:
-- All M1 outputs, plus:
+- All M1 architecture outputs, plus:
 - **Workflow design per worker:** ReAct loop for classifier (dynamic, needs observation loop); prompt chaining for drafter (fixed 3-step sequence); evaluator-optimizer for retrieval (quality gate on retrieved docs)
 - **Tool interface contracts:** Full JSON schema for each tool; non-use examples for disambiguation; permission tier (Read/Write/Admin) per tool; reversibility signal per tool
 - **ACI non-use examples added:** `search_kb(query)` explicitly documented as NOT for "look up a specific article by ID" (use `get_article_by_id` instead)
-- **Issues enriched:** Each issue includes tool schema reference, step sequence design, and ACI requirement
+- **GitHub issues generated:** 17 issues with description, acceptance criteria, tool schema reference, step sequence design, and ACI requirement — directly from the architecture output
 - **Observability checkpoint issue added:** "Add telemetry spine before shadow mode" — references 5 required instruments
 
 **Measurable improvement over M1:**
-- Issues completeness: 12 → 17 issues (5 additional workflow-support and observability issues)
+- Issue generation: manual from notes (M1) → 17 structured issues from architecture (M2)
 - Tool contract definition: 0 schemas (M1) → 11 tool schemas with permission tiers (M2)
 - Pattern selection depth: topology only (M1) → topology + per-agent control flow pattern (M2)
 - Error avoidance: Without ACI non-use examples, 2 of the 11 tools had overlapping descriptions that would cause wrong tool selection in production (validated in a dry-run test)
@@ -97,7 +96,7 @@ With `agent-eval-design` (audit mode with eval-scorecard artifact):
 **Measurable improvement over M1:**
 - Output persistence: conversational only (M1) → HTML artifact (M2) — survives session close
 - Stakeholder reach: engineer only (M1) → shareable across ops/PM/compliance (M2)
-- Audit reproducibility: re-run conversation to re-audit (M1) → compare `eval-scorecard-v1.html` to `eval-scorecard-v2.html` after fixes (M2)
+- Audit reproducibility: re-run conversation to re-audit (M1) → re-run skill to overwrite `eval-scorecard-billing-agent.html` after fixes; compare before/after via git history (M2)
 - Error avoidance: Without the artifact, 1 of the 3 eval gaps identified in M1 was missed in the next sprint planning session (it wasn't in meeting notes); the artifact would have been the source of truth
 
 ---
