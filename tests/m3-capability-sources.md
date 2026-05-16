@@ -11,6 +11,7 @@ Every promoted M3 capability has named source chapter support. No M3 capability 
 | ID | Path | Key Concepts Used in M3 |
 |---|---|---|
 | T4.2 | `technical/module-4-quality-safety-oversight/ch2-guardrails` | Seven-layer guardrail stack; hallucination as guardrail failure mode; containment patterns |
+| T4.3 | `technical/module-4-quality-safety-oversight/ch3-human-in-the-loop` | Five HITL models; risk-tiered oversight; approval gate design; bounded autonomy contracts |
 | T5.1 | `technical/module-5-production-engineering/ch1-monitoring-observability` | MELT framework; trace replay for incident diagnosis; anomaly classification |
 | T5.2 | `technical/module-5-production-engineering/ch2-security` | Eight-threat taxonomy; prompt injection; zero-trust agent design; capability scoping |
 | T5.3 | `technical/module-5-production-engineering/ch3-cost-optimization` | Token budgets; model cascades; caching strategies; cost-per-task breakdown |
@@ -122,6 +123,32 @@ Routing boundary:
 
 ---
 
+### `human-in-the-loop-patterns`
+
+Primary sources:
+- T4.3 — five HITL models (fully automated / human-on-standby / human-in-the-loop / human-over-the-loop / human-as-teacher), risk-tiered oversight, approval gate design, bounded autonomy contracts
+
+Supporting sources:
+- T4.4 — principal hierarchy and audit trail obligations (who approved what and when)
+- T4.2 — guardrail stack layer 6 (human review gate as a guardrail layer)
+- T5.5 — stateless/stateful deployment topology as context for HITL gate placement
+
+Key decision frameworks to extract:
+- Five HITL model selection by risk tier and action reversibility
+- Approval gate design: what triggers a gate, what the gate must validate, what constitutes approval
+- Bounded autonomy contract: explicit statement of what the agent can do without human approval
+- HITL escalation ladder: when to escalate from lower to higher oversight
+- Feedback loop design: how human approvals feed back into eval and trust calibration
+- HITL at scale: approval bottleneck patterns and batch-approval strategies
+
+Routing boundary:
+- Not `deployment-readiness`: deployment covers HITL as one element of a launch gate checklist; this skill owns the full HITL design space and approval gate architecture
+- Not `agentic-governance-and-adoption`: governance covers stakeholder policy and org adoption; this skill covers the technical and design patterns of the HITL layer
+- Not `agent-eval-design`: eval tracks HITL outcomes as a metric; this skill designs the HITL mechanism itself
+- Trigger: "design the HITL layer for this agent", "what approval gates do we need", "how should humans stay in the loop for this workflow"
+
+---
+
 ## M3 Subagent Source Map
 
 ### `agent-reliability-engineer`
@@ -165,6 +192,7 @@ Delegation trigger: invoked from `latency-and-cost-optimization` when decomposit
 | `agentic-security` | Yes (T5.2; supporting T1.4, T4.4) |
 | `incident-investigation` | Yes (T6.1, T5.1; supporting T4.1, T4.2) |
 | `hallucination-containment` | Yes (T4.2, T6.1; supporting T4.1, T2.2) |
+| `human-in-the-loop-patterns` | Yes (T4.3; supporting T4.2, T4.4, T5.5) |
 | `agent-reliability-engineer` | Yes (T4.2, T4.1, T6.1) |
 | `agent-cost-performance-analyst` | Yes (T5.3, T5.4) |
 

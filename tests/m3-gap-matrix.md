@@ -16,6 +16,7 @@ No vague buckets — every item maps to a concrete M3 task or an explicit deferr
 | `agentic-security` | T5.2 | Task 9 | Agent-specific trust boundaries; eight-threat taxonomy; high public value |
 | `incident-investigation` | T6.1, T5.1 | Task 10 | Post-launch failure reconstruction; no M2 skill covers this path |
 | `hallucination-containment` | T4.2, T6.1 | Task 11 | Containment strategies; eval-design covers detection only, not mitigation |
+| `human-in-the-loop-patterns` | T4.3 | Task 11b | T4.3 covers 5 distinct HITL models and risk-tiered approval gates beyond what deployment-readiness surfaces; promoted from Later |
 
 ### Subagents
 
@@ -58,9 +59,9 @@ No vague buckets — every item maps to a concrete M3 task or an explicit deferr
 
 | Capability | Primary Source | Reason for Deferral |
 |---|---|---|
-| `human-in-the-loop-patterns` | T4.3 | Core HITL coverage already in `deployment-readiness`; full dedicated skill has low marginal delta for public release |
 | `guardrails-and-fallbacks` | T4.2 | Seven-layer stack already surfaced via `deployment-readiness`; deeper skill adds breadth without fixing a public-release gap |
-| `memory-patterns` | T1.3, T2.1 | Four-tier memory architecture substantially covered by `context-engineering-for-agents`; dedicated skill deferred until usage evidence shows gap |
+| `guardrails-and-fallbacks` | T4.2 | Seven-layer stack already surfaced via `deployment-readiness`; deeper skill adds breadth without fixing a public-release gap |
+| `memory-patterns` | T1.3, T2.1 | Four-tier memory architecture substantially covered by `context-engineering-for-agents`; defer until usage evidence shows gap |
 | `/agentic-discover` command | workflow | Discovery workflow is nice-to-have; no blocking user scenario identified |
 | `/agentic-debug` command | workflow | Debugging support pathway; no evidence of demand at public release; superseded by `incident-investigation` for production failures |
 | `/agentic-ship` command | — | Would require CI/CD integration scope beyond plugin thesis; deferred indefinitely |
@@ -83,8 +84,8 @@ No vague buckets — every item maps to a concrete M3 task or an explicit deferr
 
 | Bucket | Count |
 |---|---|
-| M3: implement | 4 skills, 3 subagents (incl. re-evaluate), 5 evidence items, 3 routing/scenario items, 4 packaging items |
-| Later: defer | 7 items |
+| M3: implement | 5 skills, 3 subagents (incl. re-evaluate), 5 evidence items, 3 routing/scenario items, 4 packaging items |
+| Later: defer | 6 items |
 | Out of scope: reject | 4 items |
 
 No vague "improve quality" items remain. Every M3 item maps to one explicit task in `docs/milestone-3-implementation-plan.md`.
