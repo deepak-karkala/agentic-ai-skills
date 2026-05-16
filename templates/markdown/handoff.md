@@ -53,9 +53,9 @@ This document transfers ownership of {{PROJECT_NAME}} from the outgoing team to 
 
 **Deployed environments:**
 
-{{#ENVIRONMENT_ROWS}}
 | Environment | Status | URL / endpoint | Notes |
 |---|---|---|---|
+{{#ENVIRONMENT_ROWS}}
 | {{ENV_NAME}} | {{ENV_STATUS}} | {{ENV_ENDPOINT}} | {{ENV_NOTES}} |
 {{/ENVIRONMENT_ROWS}}
 
@@ -107,9 +107,9 @@ The team glossary is at {{GLOSSARY_ARTIFACT}}. Key terms to know before reviewin
 
 ## Contacts
 
-{{#CONTACT_ROWS}}
 | Role | Name | Contact |
 |---|---|---|
+{{#CONTACT_ROWS}}
 | {{CONTACT_ROLE}} | {{CONTACT_NAME}} | {{CONTACT_INFO}} |
 {{/CONTACT_ROWS}}
 

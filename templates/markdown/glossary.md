@@ -24,9 +24,9 @@ This glossary establishes the shared vocabulary for {{PROJECT_NAME}}. Terms are 
 
 The following terms had multiple competing meanings in the team before this glossary was established. The canonical definition above is the one to use going forward.
 
-{{#AMBIGUOUS_TERM_ROWS}}
 | Term | Previous conflicting meanings | Canonical choice | Reason |
 |---|---|---|---|
+{{#AMBIGUOUS_TERM_ROWS}}
 | {{AMBIG_TERM}} | {{AMBIG_CONFLICTING}} | {{AMBIG_CANONICAL}} | {{AMBIG_REASON}} |
 {{/AMBIGUOUS_TERM_ROWS}}
 
@@ -36,9 +36,9 @@ The following terms had multiple competing meanings in the team before this glos
 
 These terms are prohibited in this project because they are ambiguous, misleading, or overloaded. Use the canonical term instead.
 
-{{#BANNED_TERM_ROWS}}
 | Banned term | Use instead | Why banned |
 |---|---|---|
+{{#BANNED_TERM_ROWS}}
 | {{BANNED_TERM}} | {{BANNED_USE_INSTEAD}} | {{BANNED_REASON}} |
 {{/BANNED_TERM_ROWS}}
 
