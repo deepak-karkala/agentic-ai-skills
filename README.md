@@ -72,7 +72,7 @@ Run these commands to invoke the plugin's main workflows:
 | `/agentic-ai-engineering:agentic-prototype` | Scope a minimal working prototype from an agent design |
 | `/agentic-ai-engineering:agentic-handoff` | Produce a structured handoff artifact from a completed agent project |
 
-Skills without a command wrapper (`single-agent-workflow-design`, `tool-interface-design`, `agent-observability`, `agentic-ubiquitous-language`) are auto-routed by intent — describe what you need and the plugin selects the right skill.
+Skills without a command wrapper (`multi-agent-orchestration`, `context-engineering-for-agents`, `single-agent-workflow-design`, `tool-interface-design`, `agent-observability`, `agentic-ubiquitous-language`) are auto-routed by intent — describe what you need and the plugin selects the right skill.
 
 ---
 

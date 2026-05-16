@@ -58,18 +58,18 @@ The following criteria must all pass before a Milestone 2 GitHub release tag is 
 
 - [ ] All 17 flagship skills have: explicit triggers, explicit non-trigger exclusions, step-by-step workflow, output format, scope boundaries
 - [ ] All 17 flagship skills have at least one worked scenario in `examples/scenarios/`
-- [ ] All 10 Milestone 2 skills respect the output path convention: `artifact_output_path` or `.agentic/artifacts/` fallback
+- [ ] All 11 Milestone 2 skills respect the output path convention: `artifact_output_path` or `.agentic/artifacts/` fallback
 - [ ] Strategy lane skills (`agentic-opportunity-framing`, `agentic-product-strategy`, `agentic-economics-and-moats`, `agentic-governance-and-adoption`) have explicit routing boundaries that do not overlap with M1 technical skills
 - [ ] `setup-agentic-ai-engineering` post-setup report lists all 17 skills and all 7 config fields with accurate improvement descriptions
 
 ### Routing gate (manual dry-run)
 
-- [ ] `tests/routing-dry-run-m2.md` dry-run passes: all 7 new M2 skill rows have correct obvious-trigger, paraphrase-trigger, and non-trigger routing
+- [ ] `tests/routing-dry-run-m2.md` dry-run passes: all 8 new M2 skill rows have correct obvious-trigger, paraphrase-trigger, and non-trigger routing
 - [ ] 8 boundary collision cases are resolved by the tie-breaking rule (pre-build → strategy lane; post-decision → technical lane)
 - [ ] `/agentic-evals` with existing eval suite delegates to `agent-evals-auditor`
 - [ ] `/agentic-opportunity-framing` or `/agentic-product-strategy` with non-trivial input delegates to `agent-product-strategist`
 - [ ] No skill delegates to a subagent for greenfield input
-- [ ] All 5 auto-routed skills (no command wrapper) still activate via AGENTS.md intent matching
+- [ ] All 6 auto-routed skills (no command wrapper) still activate via AGENTS.md intent matching
 
 ### Artifact gate (manual)
 
