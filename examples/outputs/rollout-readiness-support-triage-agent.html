@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Triage Agent — Rollout Readiness</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-alt: #222636;
+      --border: #2d3248;
+      --accent: #7c6af7;
+      --accent-muted: #3d3566;
+      --text: #e2e5f0;
+      --text-muted: #8891b0;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #f87171;
+      --blue: #60a5fa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 32px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 32px;
+    }
+    header .plugin-badge {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    header h1 { font-size: 24px; font-weight: 600; color: var(--text); }
+    header .meta { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+
+    .verdict-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+    .verdict-label { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .verdict-value { font-size: 18px; font-weight: 600; }
+    .verdict-value.ready { color: var(--green); }
+    .verdict-value.caution { color: var(--yellow); }
+    .verdict-value.not-ready { color: var(--red); }
+    .verdict-divider { width: 1px; height: 40px; background: var(--border); }
+    .verdict-summary { color: var(--text-muted); font-size: 13px; flex: 1; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .card h2 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .card.full { grid-column: 1 / -1; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge.green { background: rgba(74,222,128,0.15); color: var(--green); }
+    .badge.yellow { background: rgba(250,204,21,0.15); color: var(--yellow); }
+    .badge.red { background: rgba(248,113,113,0.15); color: var(--red); }
+    .badge.blue { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .badge.purple { background: rgba(124,106,247,0.15); color: var(--accent); }
+
+    .gate-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .gate-row:last-child { border-bottom: none; }
+    .gate-status { flex-shrink: 0; padding-top: 2px; }
+    .gate-content { flex: 1; }
+    .gate-name { font-weight: 500; margin-bottom: 2px; font-size: 13px; }
+    .gate-note { color: var(--text-muted); font-size: 12px; }
+
+    .risk-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .risk-row:last-child { border-bottom: none; }
+    .risk-severity { flex-shrink: 0; width: 60px; display: flex; align-items: flex-start; padding-top: 2px; }
+    .risk-content { flex: 1; }
+    .risk-title { font-weight: 500; margin-bottom: 4px; }
+    .risk-description { color: var(--text-muted); font-size: 12px; }
+    .risk-mitigation { color: var(--blue); font-size: 12px; margin-top: 4px; }
+
+    .blocker-row {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .blocker-row:last-child { border-bottom: none; }
+    .blocker-badge { flex-shrink: 0; padding-top: 2px; }
+    .blocker-text { flex: 1; font-size: 13px; }
+    .blocker-owner { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+
+    .recommendation {
+      background: linear-gradient(135deg, rgba(124,106,247,0.08), rgba(96,165,250,0.06));
+      border: 1px solid var(--accent-muted);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .recommendation h3 { color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .recommendation p { color: var(--text); font-size: 14px; line-height: 1.7; }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="plugin-badge">agentic-ai-engineering · Rollout Readiness</div>
+  <h1>Support Triage Agent</h1>
+  <div class="meta">Generated 2026-05-16 · Skill: deployment-readiness · Command: /agentic-ai-engineering:agentic-ops</div>
+</header>
+
+<!-- READINESS VERDICT BAR -->
+<div class="verdict-bar">
+  <div>
+    <div class="verdict-label">Readiness</div>
+    <div class="verdict-value caution">Caution</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div>
+    <div class="verdict-label">Gates passed</div>
+    <div style="font-size: 18px; font-weight: 600; color: var(--text);">7 / 10</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div>
+    <div class="verdict-label">Open blockers</div>
+    <div style="font-size: 18px; font-weight: 600; color: var(--red);">2</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div class="verdict-summary">Core infrastructure and HITL posture are in place, but two blockers must clear before production: adversarial eval coverage and a defined circuit-breaker for the downstream CRM tool. Recommend limited-traffic canary (5%) pending blocker resolution.</div>
+</div>
+
+<!-- PRODUCTION GATE CHECKLIST + HITL POSTURE -->
+<div class="grid-2">
+  <div class="card">
+    <h2>Production Gate Checklist</h2>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge green">Passed</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">Eval suite in CI</div>
+        <div class="gate-note">22 golden cases run on every PR; pass rate gate at 95%.</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge green">Passed</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">HITL approval gates defined</div>
+        <div class="gate-note">High-severity escalations require human confirmation before Tier-2 assignment.</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge green">Passed</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">PII handling validated</div>
+        <div class="gate-note">Redaction layer tested; GDPR-relevant fields stripped before LLM context.</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge green">Passed</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">Tool permissions scoped</div>
+        <div class="gate-note">All tools operating at minimum required permission tier (read-only for lookup tools).</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge green">Passed</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">Fallback behavior tested</div>
+        <div class="gate-note">Tool-failure fallback routes to human queue with full context; tested in staging.</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge green">Passed</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">Rollback procedure documented</div>
+        <div class="gate-note">Feature flag controls agent routing; toggle disables in &lt;2 minutes.</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge green">Passed</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">Observability instrumented</div>
+        <div class="gate-note">MELT stack deployed; OpenTelemetry spans on all agent-to-tool calls.</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge red">Not Met</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">Adversarial eval coverage</div>
+        <div class="gate-note">Prompt injection and adversarial ticket fixtures not yet in eval suite. Blocker B1.</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge red">Not Met</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">CRM tool circuit breaker</div>
+        <div class="gate-note">No circuit breaker defined for CRM write operations. Blocker B2.</div>
+      </div>
+    </div>
+    <div class="gate-row">
+      <div class="gate-status">
+        <span class="badge yellow">Partial</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">Load test completed</div>
+        <div class="gate-note">Tested at 10 concurrent tickets; target production peak is 80. Full load test pending.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>HITL Posture</h2>
+    <table>
+      <tr><th>Dimension</th><th>Setting</th></tr>
+      <tr>
+        <td>Autonomy level</td>
+        <td><span class="badge yellow">L2 Assisted</span></td>
+      </tr>
+      <tr>
+        <td>Approval gates</td>
+        <td>High-severity tickets require human confirmation before Tier-2 assignment; refunds over $500 require explicit approval</td>
+      </tr>
+      <tr>
+        <td>Override path</td>
+        <td>Support agent can override any routing decision via the triage UI override button; logged and audited</td>
+      </tr>
+      <tr>
+        <td>Escalation trigger</td>
+        <td>Confidence below 0.7, unrecognized category, customer sentiment flagged as high-distress, or any mention of legal/compliance terms</td>
+      </tr>
+      <tr>
+        <td>Fallback behavior</td>
+        <td>Route to human queue with full ticket context and agent reasoning summary; max 4-hour SLA</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- OBSERVABILITY READINESS -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Observability Readiness</h2>
+  <table>
+    <tr>
+      <th>Instrument</th>
+      <th>Status</th>
+      <th>Notes</th>
+    </tr>
+    <tr>
+      <td>Distributed tracing (OpenTelemetry)</td>
+      <td><span class="badge green">In Place</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">CHAIN, LLM, and TOOL spans instrumented. Trace IDs propagated to CRM and ticketing system calls.</td>
+    </tr>
+    <tr>
+      <td>LLM call logging</td>
+      <td><span class="badge green">In Place</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">Prompt/completion pairs logged (PII stripped) with model, temperature, and token counts.</td>
+    </tr>
+    <tr>
+      <td>Token cost metrics</td>
+      <td><span class="badge yellow">Partial</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">Total tokens per session logged; per-tool-call cost breakdown not yet available. Cost dashboards not yet configured.</td>
+    </tr>
+    <tr>
+      <td>Error rate alerting</td>
+      <td><span class="badge green">In Place</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">PagerDuty alert on error rate &gt; 5% over 5-minute window; escalates to on-call engineer.</td>
+    </tr>
+    <tr>
+      <td>Latency p95 dashboard</td>
+      <td><span class="badge yellow">Partial</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">Overall latency measured; per-span breakdown (model inference vs tool vs network) not yet visible in dashboard.</td>
+    </tr>
+    <tr>
+      <td>Session replay</td>
+      <td><span class="badge red">Missing</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">Full agent session replay (for post-incident diagnosis) not implemented. Logs available but no replay interface.</td>
+    </tr>
+    <tr>
+      <td>Audit trail (HITL actions)</td>
+      <td><span class="badge green">In Place</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">All human override and approval actions logged with timestamp, agent ID, and routing decision delta.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ROLLOUT RISK REGISTER -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Rollout Risk Register</h2>
+  <div class="risk-row">
+    <div class="risk-severity"><span class="badge red">High</span></div>
+    <div class="risk-content">
+      <div class="risk-title">Adversarial ticket injection</div>
+      <div class="risk-description">A malicious customer could embed instructions in ticket text that override the agent's routing behavior, potentially routing tickets to wrong queues or leaking routing rules.</div>
+      <div class="risk-mitigation">Add prompt injection detection layer before ticket text reaches agent context; implement adversarial eval suite (Blocker B1).</div>
+    </div>
+  </div>
+  <div class="risk-row">
+    <div class="risk-severity"><span class="badge red">High</span></div>
+    <div class="risk-content">
+      <div class="risk-title">CRM write without circuit breaker</div>
+      <div class="risk-description">The CRM status-update tool has no circuit breaker. A runaway loop or cascading failure could write incorrect statuses to hundreds of tickets before detection.</div>
+      <div class="risk-mitigation">Implement circuit breaker on CRM write tool: max 5 writes per session, pause after 3 consecutive errors (Blocker B2).</div>
+    </div>
+  </div>
+  <div class="risk-row">
+    <div class="risk-severity"><span class="badge yellow">Medium</span></div>
+    <div class="risk-content">
+      <div class="risk-title">Load capacity gap</div>
+      <div class="risk-description">Peak production load (80 concurrent tickets) is 8x the tested load (10). Performance characteristics at production scale are unknown.</div>
+      <div class="risk-mitigation">Complete full load test at 80 concurrent tickets before expanding beyond canary; set auto-scaling thresholds.</div>
+    </div>
+  </div>
+  <div class="risk-row">
+    <div class="risk-severity"><span class="badge yellow">Medium</span></div>
+    <div class="risk-content">
+      <div class="risk-title">Context drift on long ticket threads</div>
+      <div class="risk-description">Ticket threads with 20+ messages approach context window limits. Agent behavior at window boundary not tested; may produce inconsistent routing decisions.</div>
+      <div class="risk-mitigation">Implement context summarization for threads exceeding 15 messages; add 3 long-thread eval fixtures.</div>
+    </div>
+  </div>
+  <div class="risk-row">
+    <div class="risk-severity"><span class="badge yellow">Medium</span></div>
+    <div class="risk-content">
+      <div class="risk-title">Model version drift</div>
+      <div class="risk-description">Agent is pinned to claude-3-5-sonnet-20241022. If the model is updated or deprecated, routing accuracy may regress silently without re-evaluation.</div>
+      <div class="risk-mitigation">Pin model version in config; add model version to eval metadata; set 90-day re-eval reminder when model is updated.</div>
+    </div>
+  </div>
+</div>
+
+<!-- OPEN BLOCKERS -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Open Blockers</h2>
+  <div class="blocker-row">
+    <div class="blocker-badge"><span class="badge red">Blocker</span></div>
+    <div class="blocker-text">
+      B1: Adversarial eval suite not implemented — prompt injection detection not validated. Agent may misroute tickets with embedded instructions. Blocks production launch.
+      <div class="blocker-owner">Owner: ML Engineer (Jane D.) · Target: 2026-05-23</div>
+    </div>
+  </div>
+  <div class="blocker-row">
+    <div class="blocker-badge"><span class="badge red">Blocker</span></div>
+    <div class="blocker-text">
+      B2: CRM write tool circuit breaker absent. Runaway writes possible under error cascade. Blocks production launch for all tickets that trigger CRM updates.
+      <div class="blocker-owner">Owner: Backend Engineer (Mark L.) · Target: 2026-05-20</div>
+    </div>
+  </div>
+</div>
+
+<!-- ROLLOUT RECOMMENDATION -->
+<div class="recommendation">
+  <h3>Rollout Recommendation</h3>
+  <p>Deploy to canary at 5% traffic (read-only ticket classification only — disable CRM write tool in canary config) while blockers B1 and B2 are resolved. Monitor error rate, latency p95, and HITL escalation rate during canary. Once B1 and B2 are cleared and load test passes, expand to 25% then full traffic in 1-week increments. Do not enable CRM write tool at any traffic tier until B2 (circuit breaker) is implemented and tested.</p>
+</div>
+
+<footer>
+  <span>agentic-ai-engineering plugin · deployment-readiness skill</span>
+  <span>2026-05-16</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Triage Agent — Eval Scorecard</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-alt: #222636;
+      --border: #2d3248;
+      --accent: #7c6af7;
+      --accent-muted: #3d3566;
+      --text: #e2e5f0;
+      --text-muted: #8891b0;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #f87171;
+      --blue: #60a5fa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 32px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 32px;
+    }
+    header .plugin-badge {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    header h1 { font-size: 24px; font-weight: 600; color: var(--text); }
+    header .meta { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+
+    .verdict-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+    .verdict-label { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .verdict-value { font-size: 18px; font-weight: 600; }
+    .verdict-value.strong { color: var(--green); }
+    .verdict-value.partial { color: var(--yellow); }
+    .verdict-value.weak { color: var(--red); }
+    .verdict-divider { width: 1px; height: 40px; background: var(--border); }
+    .verdict-summary { color: var(--text-muted); font-size: 13px; flex: 1; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .card h2 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .card.full { grid-column: 1 / -1; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge.green { background: rgba(74,222,128,0.15); color: var(--green); }
+    .badge.yellow { background: rgba(250,204,21,0.15); color: var(--yellow); }
+    .badge.red { background: rgba(248,113,113,0.15); color: var(--red); }
+    .badge.blue { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .badge.purple { background: rgba(124,106,247,0.15); color: var(--accent); }
+
+    .dimension-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .dimension-row:last-child { border-bottom: none; }
+    .dimension-status { flex-shrink: 0; padding-top: 2px; }
+    .dimension-content { flex: 1; }
+    .dimension-name { font-weight: 500; margin-bottom: 4px; }
+    .dimension-note { color: var(--text-muted); font-size: 12px; }
+
+    .gap-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .gap-row:last-child { border-bottom: none; }
+    .gap-priority { flex-shrink: 0; width: 60px; display: flex; align-items: flex-start; padding-top: 2px; }
+    .gap-content { flex: 1; }
+    .gap-title { font-weight: 500; margin-bottom: 4px; }
+    .gap-description { color: var(--text-muted); font-size: 12px; }
+    .gap-fix { color: var(--blue); font-size: 12px; margin-top: 4px; }
+
+    .recommendation {
+      background: linear-gradient(135deg, rgba(124,106,247,0.08), rgba(96,165,250,0.06));
+      border: 1px solid var(--accent-muted);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .recommendation h3 { color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .recommendation p { color: var(--text); font-size: 14px; line-height: 1.7; }
+
+    .priority-list { list-style: none; }
+    .priority-list li {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .priority-list li:last-child { border-bottom: none; }
+    .priority-num { flex-shrink: 0; color: var(--accent); font-weight: 600; min-width: 18px; }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="plugin-badge">agentic-ai-engineering · Eval Scorecard</div>
+  <h1>Support Triage Agent</h1>
+  <div class="meta">Generated 2026-05-16 · Skill: agent-eval-design · Command: /agentic-ai-engineering:agentic-evals</div>
+</header>
+
+<!-- COVERAGE VERDICT BAR -->
+<div class="verdict-bar">
+  <div>
+    <div class="verdict-label">Coverage</div>
+    <div class="verdict-value partial">Partial</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div>
+    <div class="verdict-label">Dimensions tested</div>
+    <div style="font-size: 18px; font-weight: 600; color: var(--text);">3 / 6</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div class="verdict-summary">Task Success and Safety dimensions have reasonable coverage; Trajectory Quality, Efficiency, and Collaboration are absent. Robustness has partial coverage limited to happy-path tool failures. Three high-priority gaps block production readiness.</div>
+</div>
+
+<!-- SCORECARD COVERAGE + GRADER QUALITY -->
+<div class="grid-2">
+  <div class="card">
+    <h2>Six-Dimension Coverage</h2>
+    <div class="dimension-row">
+      <div class="dimension-status">
+        <span class="badge green">Tested</span>
+      </div>
+      <div class="dimension-content">
+        <div class="dimension-name">Task Success</div>
+        <div class="dimension-note">22 golden cases cover ticket classification, routing decisions, and escalation triggers. LLM grader + exact-match on ticket ID.</div>
+      </div>
+    </div>
+    <div class="dimension-row">
+      <div class="dimension-status">
+        <span class="badge red">Absent</span>
+      </div>
+      <div class="dimension-content">
+        <div class="dimension-name">Trajectory Quality</div>
+        <div class="dimension-note">No tests verify the agent takes the minimum-step path or avoids unnecessary tool calls. Trajectory not logged in current test harness.</div>
+      </div>
+    </div>
+    <div class="dimension-row">
+      <div class="dimension-status">
+        <span class="badge yellow">Partial</span>
+      </div>
+      <div class="dimension-content">
+        <div class="dimension-name">Robustness</div>
+        <div class="dimension-note">Tool failure injection covers ticket-lookup and CRM tool. Malformed inputs and ambiguous ticket text not tested.</div>
+      </div>
+    </div>
+    <div class="dimension-row">
+      <div class="dimension-status">
+        <span class="badge yellow">Partial</span>
+      </div>
+      <div class="dimension-content">
+        <div class="dimension-name">Safety</div>
+        <div class="dimension-note">PII redaction validated on 8 fixture tickets. Prompt injection resistance not tested. No adversarial customer-message fixtures.</div>
+      </div>
+    </div>
+    <div class="dimension-row">
+      <div class="dimension-status">
+        <span class="badge red">Absent</span>
+      </div>
+      <div class="dimension-content">
+        <div class="dimension-name">Efficiency</div>
+        <div class="dimension-note">No latency budget tests. Token cost per ticket not measured. No budget-exceeded behavior tested.</div>
+      </div>
+    </div>
+    <div class="dimension-row">
+      <div class="dimension-status">
+        <span class="badge red">Absent</span>
+      </div>
+      <div class="dimension-content">
+        <div class="dimension-name">Collaboration</div>
+        <div class="dimension-note">Agent-to-human handoff quality not evaluated. No tests for handoff message clarity or context completeness when escalating to Tier-2.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Grader Quality</h2>
+    <table>
+      <tr>
+        <th>Grader</th>
+        <th>Type</th>
+        <th>Quality</th>
+      </tr>
+      <tr>
+        <td>Ticket classifier accuracy</td>
+        <td><span class="badge blue">Exact Match</span></td>
+        <td><span class="badge green">Reliable</span></td>
+      </tr>
+      <tr>
+        <td>Routing decision evaluator</td>
+        <td><span class="badge blue">LLM Grader</span></td>
+        <td><span class="badge green">Reliable</span></td>
+      </tr>
+      <tr>
+        <td>PII redaction checker</td>
+        <td><span class="badge blue">Regex + Rule</span></td>
+        <td><span class="badge green">Reliable</span></td>
+      </tr>
+      <tr>
+        <td>Escalation rationale scorer</td>
+        <td><span class="badge blue">LLM Grader</span></td>
+        <td><span class="badge yellow">Questionable</span></td>
+      </tr>
+      <tr>
+        <td>Response tone evaluator</td>
+        <td><span class="badge blue">LLM Grader</span></td>
+        <td><span class="badge yellow">Questionable</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- EVAL ANTI-PATTERNS -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Anti-patterns Detected</h2>
+  <table>
+    <tr>
+      <th>Anti-pattern</th>
+      <th>Present</th>
+      <th>Evidence</th>
+    </tr>
+    <tr>
+      <td><strong>Golden dataset too small</strong></td>
+      <td><span class="badge yellow">Partial</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">22 cases cover core paths but edge categories (billing disputes, multi-issue tickets) have fewer than 3 examples each.</td>
+    </tr>
+    <tr>
+      <td><strong>Grader judges its own output</strong></td>
+      <td><span class="badge red">Present</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">Escalation rationale grader uses the same model family (claude-3) as the agent itself — grader bias risk for subjective quality judgements.</td>
+    </tr>
+    <tr>
+      <td><strong>No adversarial fixtures</strong></td>
+      <td><span class="badge red">Present</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">All 22 golden cases are well-formed, cooperative inputs. No tests for jailbreak attempts, instruction injection in ticket body, or adversarial category confusion.</td>
+    </tr>
+    <tr>
+      <td><strong>Coverage metric disguises dimension gaps</strong></td>
+      <td><span class="badge red">Present</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">Reporting "22 passing evals" hides that Trajectory Quality, Efficiency, and Collaboration have zero coverage — a single number obscures 3 absent dimensions.</td>
+    </tr>
+    <tr>
+      <td><strong>Eval suite not run in CI</strong></td>
+      <td><span class="badge green">Absent</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">Eval suite is wired into the deployment pipeline and runs on every PR that modifies agent prompt, routing logic, or tool schema.</td>
+    </tr>
+    <tr>
+      <td><strong>Static golden dataset</strong></td>
+      <td><span class="badge green">Absent</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">Dataset refresh process documented; new production tickets are sampled weekly and reviewed for golden-case candidates.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- GAP REGISTER -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Coverage Gaps</h2>
+  <div class="gap-row">
+    <div class="gap-priority"><span class="badge red">P1</span></div>
+    <div class="gap-content">
+      <div class="gap-title">No trajectory quality tests</div>
+      <div class="gap-description">The agent's step count and tool call sequence are not evaluated. An agent that reaches the correct routing decision via an inefficient 12-step path will pass all current evals.</div>
+      <div class="gap-fix">Add trajectory logging to the test harness; write 5 golden trajectories for core ticket types; score step count and unnecessary tool calls.</div>
+    </div>
+  </div>
+  <div class="gap-row">
+    <div class="gap-priority"><span class="badge red">P1</span></div>
+    <div class="gap-content">
+      <div class="gap-title">Adversarial safety fixtures absent</div>
+      <div class="gap-description">No tests cover prompt injection in ticket body, adversarial category confusion, or attempts to extract internal routing rules via ticket text.</div>
+      <div class="gap-fix">Write 8–10 adversarial fixtures; add a prompt-injection detection grader; target failure-to-detect rate below 5%.</div>
+    </div>
+  </div>
+  <div class="gap-row">
+    <div class="gap-priority"><span class="badge red">P1</span></div>
+    <div class="gap-content">
+      <div class="gap-title">Handoff quality not evaluated</div>
+      <div class="gap-description">When the triage agent escalates to Tier-2, the handoff message content, context completeness, and recommended priority are not graded. Tier-2 agents receive unvalidated context.</div>
+      <div class="gap-fix">Define handoff message schema; write LLM grader rubric for context completeness; add 6 escalation golden cases.</div>
+    </div>
+  </div>
+  <div class="gap-row">
+    <div class="gap-priority"><span class="badge yellow">P2</span></div>
+    <div class="gap-content">
+      <div class="gap-title">No efficiency / latency budget tests</div>
+      <div class="gap-description">Token cost per ticket and p95 latency are unmonitored in evals. Budget-exceeded edge cases (long ticket threads) are not tested.</div>
+      <div class="gap-fix">Instrument token counter in test harness; set budget thresholds (2000 tokens, 8s p95); add 3 long-thread stress fixtures.</div>
+    </div>
+  </div>
+  <div class="gap-row">
+    <div class="gap-priority"><span class="badge yellow">P2</span></div>
+    <div class="gap-content">
+      <div class="gap-title">Escalation rationale grader uses same model family</div>
+      <div class="gap-description">Claude-3 grading Claude-3 outputs introduces grader bias — the grader is likely to over-score rationale quality for outputs that match its own style.</div>
+      <div class="gap-fix">Replace escalation rationale grader with a GPT-4o or Gemini 1.5 Pro judge, or add a human-calibration pass on a 20% sample.</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVAL RECOMMENDATION -->
+<div class="recommendation">
+  <h3>Eval Recommendation</h3>
+  <p>The Support Triage Agent eval suite demonstrates solid core coverage for ticket classification and routing but has three production-blocking gaps: no trajectory quality tests, no adversarial safety fixtures, and no handoff quality evaluation. Before promoting to production, resolve P1 gaps and re-run the coverage assessment. The grader bias issue (same model family grading escalation rationale) should be addressed in parallel. Once P1 gaps are closed, coverage will reach at least 5/6 dimensions and the suite will be production-ready.</p>
+</div>
+
+<!-- IMPLEMENTATION PRIORITIES -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Implementation Priorities</h2>
+  <ul class="priority-list">
+    <li>
+      <span class="priority-num">1.</span>
+      <span>Add trajectory logging to the test harness and write 5 golden trajectory fixtures for the 5 most common ticket categories.</span>
+    </li>
+    <li>
+      <span class="priority-num">2.</span>
+      <span>Write 8–10 adversarial safety fixtures covering prompt injection, category confusion, and routing-rule extraction attempts. Add detection grader.</span>
+    </li>
+    <li>
+      <span class="priority-num">3.</span>
+      <span>Define handoff message schema and write 6 escalation golden cases with LLM grader for context completeness and priority accuracy.</span>
+    </li>
+    <li>
+      <span class="priority-num">4.</span>
+      <span>Instrument token counter and latency timer; set budget thresholds; add 3 long-thread stress fixtures to catch efficiency regressions.</span>
+    </li>
+    <li>
+      <span class="priority-num">5.</span>
+      <span>Replace same-family escalation grader with a cross-family judge (GPT-4o or Gemini 1.5 Pro) or add 20% human-calibration pass.</span>
+    </li>
+  </ul>
+</div>
+
+<footer>
+  <span>agentic-ai-engineering plugin · agent-eval-design skill</span>
+  <span>2026-05-16</span>
+</footer>
+
+</body>
+</html>
