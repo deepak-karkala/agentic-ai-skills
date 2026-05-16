@@ -236,6 +236,51 @@ if [[ "$violation_count" -eq 0 ]]; then
   pass "no absolute local paths in committed plugin files"
 fi
 
+# ── 9. Rendered example outputs ──────────────────────────────────────────────
+header "Rendered example outputs"
+
+OUTPUTS_DIR="$REPO_ROOT/examples/outputs"
+
+# Check each of the 5 expected artifact types has at least one rendered file
+for artifact_spec in \
+  "architecture-review:architecture-review-*.html" \
+  "eval-scorecard:eval-scorecard-*.html" \
+  "rollout-readiness:rollout-readiness-*.html" \
+  "glossary:glossary-*.md" \
+  "handoff:handoff-*.md"
+do
+  artifact_type="${artifact_spec%%:*}"
+  pattern="${artifact_spec#*:}"
+  matches=( "$OUTPUTS_DIR"/$pattern )
+  if [[ -f "${matches[0]}" ]]; then
+    pass "examples/outputs/ has rendered $artifact_type (${matches[0]##*/})"
+  else
+    fail "examples/outputs/ missing rendered $artifact_type — expected file matching $pattern"
+  fi
+done
+
+# Check no rendered output contains unreplaced placeholders
+placeholder_violations=0
+while IFS= read -r -d '' f; do
+  filename="${f##*/}"
+  if grep -q '{{' "$f" 2>/dev/null; then
+    fail "rendered output has unreplaced placeholder(s): $filename"
+    ((placeholder_violations++)) || true
+  fi
+done < <(find "$OUTPUTS_DIR" -type f \( -name "*.html" -o -name "*.md" \) ! -name ".gitkeep" -print0 2>/dev/null)
+
+if [[ "$placeholder_violations" -eq 0 ]]; then
+  pass "all rendered outputs are placeholder-clean (no unreplaced {{}})"
+fi
+
+# Check rendering-variables fixture exists
+FIXTURE="$REPO_ROOT/tests/fixtures/rendering-variables.json"
+if [[ -f "$FIXTURE" ]]; then
+  pass "tests/fixtures/rendering-variables.json exists"
+else
+  fail "tests/fixtures/rendering-variables.json missing — rendering variable registry required"
+fi
+
 echo
 echo "══════════════════════════════════"
 echo "  Results: $PASS passed, $FAIL failed"
