@@ -237,6 +237,73 @@ Before writing the artifact, scan for any remaining `{{` markers. If any are fou
 
 ---
 
+## Artifact Naming, Storage, and Retention Conventions
+
+These conventions apply to all artifacts produced by plugin skills. Follow them exactly — consistency enables cross-linking, avoids output clutter, and ensures the Milestone 1 architecture-review path remains stable.
+
+### Filename patterns
+
+Every artifact filename follows one of two patterns:
+
+```
+<artifact-type>-<agent-or-project-name>.<ext>
+```
+
+| Artifact type | Template file | Output filename pattern | Extension |
+|---|---|---|---|
+| Architecture review | `templates/html/architecture-review.html` | `architecture-review-<agent-name>.html` | `.html` |
+| Eval scorecard | `templates/html/eval-scorecard.html` | `eval-scorecard-<agent-name>.html` | `.html` |
+| Rollout readiness | `templates/html/rollout-readiness.html` | `rollout-readiness-<agent-name>.html` | `.html` |
+| Glossary | `templates/markdown/glossary.md` | `glossary-<project-name>.md` | `.md` |
+| Handoff | `templates/markdown/handoff.md` | `handoff-<project-name>.md` | `.md` |
+| Observability plan | (inline markdown) | `observability-<agent-name>.md` | `.md` |
+| Tool interface spec | (inline markdown) | `tool-interface-<agent-name>.md` | `.md` |
+| Single-agent workflow | (inline markdown) | `workflow-<agent-name>.md` | `.md` |
+| Opportunity framing | (inline markdown) | `opportunity-framing-<name>.md` | `.md` |
+| Product strategy | (inline markdown) | `product-strategy-<name>.md` | `.md` |
+| Economics and moats | (inline markdown) | `economics-<name>.md` | `.md` |
+| Governance and adoption | (inline markdown) | `governance-<name>.md` | `.md` |
+
+**Name normalization:** Convert the agent or project name to kebab-case (lowercase, spaces replaced with `-`, special characters stripped). Example: "Procurement Agent v2" → `procurement-agent-v2`.
+
+### Output directory
+
+- Default output directory: `.agentic/artifacts/`
+- Custom output directory: configured via `artifact_output_path` in `.agentic/config.yml`
+- All artifacts go directly into the output directory — no subdirectory per artifact type, no subdirectory per skill
+- Skills must report the full output path to the user after writing: `Artifact written to .agentic/artifacts/eval-scorecard-billing-agent.html`
+
+### Overwrite vs versioning
+
+- **Overwrite by default.** Running a skill twice for the same agent name overwrites the previous artifact.
+- Skills must not create version-suffixed filenames automatically (e.g., `architecture-review-v2.html`).
+- Users who need artifact history should commit artifacts to version control.
+
+### Cross-linking between artifacts
+
+- The handoff artifact (`handoff-<name>.md`) references other artifacts by their output filename (relative to the shared output directory). Example: `See architecture-review-billing-agent.html for topology details.`
+- Cross-links are references, not embeds — do not copy large sections from one artifact into another.
+- Skills may mention related artifacts by name when they are likely to exist. They must not fail if the referenced artifact is absent.
+
+### Template location rules
+
+- HTML templates: `templates/html/<artifact-type>.html`
+- Markdown templates: `templates/markdown/<artifact-type>.md`
+- Skills that produce inline markdown (no template) write directly; no template file needed.
+- New artifact types that require a template must add their template file before the skill that uses it is implemented.
+
+### Registering new artifact types
+
+- New artifact types do not require new `.agentic/config.yml` fields. They write to the shared `artifact_output_path`.
+- The naming table above is the registry. Add a row here when a new artifact type is introduced.
+- Skills must use the exact `<artifact-type>` prefix from the table — no ad-hoc naming.
+
+### Compatibility note
+
+The Milestone 1 `architecture-review-<agent-name>.html` path is compatible with these conventions without any change. It was the original pattern these conventions formalize.
+
+---
+
 ## Testing Requirements
 
 Before a skill can be considered complete:
