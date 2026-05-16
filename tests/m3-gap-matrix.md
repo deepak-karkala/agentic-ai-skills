@@ -17,6 +17,8 @@ No vague buckets — every item maps to a concrete M3 task or an explicit deferr
 | `incident-investigation` | T6.1, T5.1 | Task 10 | Post-launch failure reconstruction; no M2 skill covers this path |
 | `hallucination-containment` | T4.2, T6.1 | Task 11 | Containment strategies; eval-design covers detection only, not mitigation |
 | `human-in-the-loop-patterns` | T4.3 | Task 11b | T4.3 covers 5 distinct HITL models and risk-tiered approval gates beyond what deployment-readiness surfaces; promoted from Later |
+| `trace-error-analysis` | T6.3 | Task 11c | New source chapter written (T6.3); TRAIL/MAST/AgentRx taxonomies provide full backing; promoted from Out of Scope |
+| `agent-ui-patterns` | T4.5 | Task 11d | New source chapter written (T4.5); 30+ practitioner sources; promoted from Out of Scope |
 
 ### Subagents
 
@@ -73,8 +75,8 @@ No vague buckets — every item maps to a concrete M3 task or an explicit deferr
 
 | Capability | Reason |
 |---|---|
-| `trace-error-analysis` | No source chapter; building from general knowledge only; does not meet source-backing standard |
-| `agent-ui-patterns` | No source backing in technical or business strategy lane; outside agentic engineering thesis |
+| `trace-error-analysis` | Promoted to M3 (Task 11c) — new source chapter T6.3 written with TRAIL, MAST, AgentRx, and fault taxonomy backing |
+| `agent-ui-patterns` | Promoted to M3 (Task 11d) — new source chapter T4.5 written with 30+ practitioner and research sources |
 | Hosted SaaS, backend services | Outside plugin scope entirely |
 | Cloud provider integrations (beyond adapter docs) | Not plugin content; vendor-specific; out of thesis |
 
@@ -84,8 +86,9 @@ No vague buckets — every item maps to a concrete M3 task or an explicit deferr
 
 | Bucket | Count |
 |---|---|
-| M3: implement | 5 skills, 3 subagents (incl. re-evaluate), 5 evidence items, 3 routing/scenario items, 4 packaging items |
+| M3: implement | 7 skills, 3 subagents (incl. re-evaluate), 5 evidence items, 3 routing/scenario items, 4 packaging items |
 | Later: defer | 6 items |
+| Promoted from Out of Scope | 2 skills (trace-error-analysis, agent-ui-patterns) — new source chapters written |
 | Out of scope: reject | 4 items |
 
 No vague "improve quality" items remain. Every M3 item maps to one explicit task in `docs/milestone-3-implementation-plan.md`.

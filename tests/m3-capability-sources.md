@@ -12,11 +12,13 @@ Every promoted M3 capability has named source chapter support. No M3 capability 
 |---|---|---|
 | T4.2 | `technical/module-4-quality-safety-oversight/ch2-guardrails` | Seven-layer guardrail stack; hallucination as guardrail failure mode; containment patterns |
 | T4.3 | `technical/module-4-quality-safety-oversight/ch3-human-in-the-loop` | Five HITL models; risk-tiered oversight; approval gate design; bounded autonomy contracts |
+| T4.5 | `technical/module-4-quality-safety-oversight/ch5-agent-ui-patterns` | Dual-panel architecture; Intent Preview; Autonomy Dial; AG-UI events; calibrated trust; confidence visualization; error recovery UX (new chapter, M3) |
 | T5.1 | `technical/module-5-production-engineering/ch1-monitoring-observability` | MELT framework; trace replay for incident diagnosis; anomaly classification |
 | T5.2 | `technical/module-5-production-engineering/ch2-security` | Eight-threat taxonomy; prompt injection; zero-trust agent design; capability scoping |
 | T5.3 | `technical/module-5-production-engineering/ch3-cost-optimization` | Token budgets; model cascades; caching strategies; cost-per-task breakdown |
 | T5.4 | `technical/module-5-production-engineering/ch4-latency-optimization` | Latency critical path; parallelization; streaming; profiling bottleneck identification |
 | T6.1 | `technical/module-6-production-mastery/ch1-production-battle-scars` | Failure taxonomy; anti-patterns (context drift, abstraction traps); incident reconstruction |
+| T6.3 | `technical/module-6-production-mastery/ch3-trace-error-analysis` | Backward-tracing RCA; TRAIL/MAST/AgentRx/fault taxonomies; span error patterns; replay strategies (new chapter, M3) |
 
 ---
 
@@ -149,6 +151,58 @@ Routing boundary:
 
 ---
 
+### `trace-error-analysis`
+
+Primary sources:
+- T6.3 — backward-tracing RCA methodology, span error pattern reference, AgentRx framework, AgenTracer counterfactual replay, TRAIL/MAST/Agentic Fault Taxonomy reference, practitioner six-bucket taxonomy
+
+Supporting sources:
+- T5.1 — MELT traces as the evidence substrate for error analysis; session replay infrastructure
+- T6.1 — production failure taxonomy (what classes of failure trace-error-analysis investigates)
+- T4.1 — eval gaps surfaced by trace investigation (the durable fix target)
+
+Key decision frameworks to extract:
+- The diagnostic reading pattern (backward-tracing: root span → span tree → first divergence → root cause span)
+- Span-level error classification matrix (which span types fail in which ways)
+- Five canonical error patterns with trace signatures (tool failures, loops, context overflow, hallucination, cascading multi-agent)
+- Root cause → durable fix mapping (which failure class maps to which skill for the fix)
+- Replay strategies by failure type (prompt replay, retrieval replay, model replay)
+
+Routing boundary:
+- Not `agent-observability`: observability instruments the system forward-looking; this skill reads existing traces backward from a known failure
+- Not `incident-investigation`: incident investigation determines fault layer and converts to fixes; this skill is the trace-reading technique used during that investigation (a supporting skill, invoked inline or as a reference)
+- Not `deployment-readiness`: deployment is pre-launch; this skill is post-failure
+- Trigger: "help me read this trace", "why did this agent fail", "which span caused this", "I have a trace and a bad output"
+
+---
+
+### `agent-ui-patterns`
+
+Primary sources:
+- T4.5 — full UI pattern library: Dual-Panel Architecture, Intent Preview, Autonomy Dial, Streaming Step Cards (AG-UI event model), Explainable Rationale, Audit Trail, Calibrated Trust, Confidence Visualization, Error Recovery UX, Component Vocabulary, Anti-Patterns, design system references
+
+Supporting sources:
+- T4.3 — HITL models that the Autonomy Dial and approval gate patterns implement at the UI layer
+- T4.4 — trust and transparency principles that the explainability and confidence patterns surface
+- T5.1 — trace/session replay as the backend for the Audit Trail and decision log UI components
+
+Key decision frameworks to extract:
+- Reversibility classification → pattern selection matrix (Intent Preview vs. Action Audit vs. silent execution)
+- Dual-Panel Architecture: when and how to separate conversation from activity stream
+- Autonomy Dial: three positions, granularity by task type, onboarding ramp
+- AG-UI event taxonomy → UI state mapping (which backend event maps to which frontend component state)
+- Calibrated trust: designing against both over-trust and active distrust
+- Graceful degradation hierarchy (four levels with explicit user communication)
+- Anti-pattern checklist (8 patterns to audit against)
+
+Routing boundary:
+- Not `human-in-the-loop-patterns`: HITL patterns cover the technical approval gate architecture; this skill covers how those gates are presented and experienced by users
+- Not `agentic-governance-and-adoption`: governance covers org-level policy and trust; this skill covers product-level UI design
+- Not `deployment-readiness`: deployment covers launch gates; this skill covers the ongoing user experience
+- Trigger: "design the UI for this agent", "how should users interact with this agent", "what should the interface show while the agent is working", "how do we show uncertainty to users"
+
+---
+
 ## M3 Subagent Source Map
 
 ### `agent-reliability-engineer`
@@ -193,6 +247,8 @@ Delegation trigger: invoked from `latency-and-cost-optimization` when decomposit
 | `incident-investigation` | Yes (T6.1, T5.1; supporting T4.1, T4.2) |
 | `hallucination-containment` | Yes (T4.2, T6.1; supporting T4.1, T2.2) |
 | `human-in-the-loop-patterns` | Yes (T4.3; supporting T4.2, T4.4, T5.5) |
+| `trace-error-analysis` | Yes (T6.3; supporting T5.1, T6.1, T4.1) — new chapter written |
+| `agent-ui-patterns` | Yes (T4.5; supporting T4.3, T4.4, T5.1) — new chapter written |
 | `agent-reliability-engineer` | Yes (T4.2, T4.1, T6.1) |
 | `agent-cost-performance-analyst` | Yes (T5.3, T5.4) |
 
