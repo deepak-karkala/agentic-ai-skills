@@ -39,7 +39,7 @@ claude --plugin-dir /path/to/agentic-ai-engineering
 
 ### Other hosts
 
-Codex, Gemini, and OpenCode support is planned. The core skill content is host-agnostic. See the host support matrix in [AGENTS.md](AGENTS.md).
+Adapter guides for Codex, Gemini/ADK, and OpenCode are in the `adapters/` directory. The core `skills/` and `agents/` content is host-agnostic — only the invocation layer differs. See the full host support matrix in [AGENTS.md](AGENTS.md).
 
 ---
 
@@ -98,14 +98,14 @@ Run these commands to invoke the plugin's main workflows:
 
 ## Host Support
 
-| Host | Status |
-|---|---|
-| Claude Code | Milestone 1 — primary target |
-| Codex | Planned |
-| Gemini | Planned |
-| OpenCode | Planned |
+| Host | Status | Adapter |
+|---|---|---|
+| Claude Code | Primary — full support | Native (plugin.json) |
+| Codex | Adapter shipped | [`adapters/codex.md`](adapters/codex.md) |
+| Gemini / ADK | Adapter shipped | [`adapters/gemini-adk.md`](adapters/gemini-adk.md) |
+| OpenCode | Spec complete | [`adapters/opencode.md`](adapters/opencode.md) |
 
-Core skill content is host-agnostic. Host-specific routing adapters are thin wrappers generated after the core is stable.
+Core `skills/` and `agents/` content is host-agnostic. Each adapter documents the invocation layer differences without modifying skill content.
 
 ---
 

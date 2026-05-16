@@ -145,11 +145,15 @@ ADK agents can write files using Python's standard `open()` or the ADK file tool
 import re
 from pathlib import Path
 
+def _escape(value: str) -> str:
+    """Escape user-provided values for safe HTML insertion."""
+    return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
 def fill_template(template_path: str, variables: dict, sections: dict) -> str:
     content = Path(template_path).read_text()
-    # Scalar substitution
+    # Scalar substitution — escape user-provided values per the rendering contract
     for key, value in variables.items():
-        content = content.replace(f"{{{{{key}}}}}", str(value))
+        content = content.replace(f"{{{{{key}}}}}", _escape(str(value)))
     # Block repetition
     for section_name, rows in sections.items():
         pattern = rf"\{{\{{#{section_name}\}}\}}(.*?)\{{\{{/{section_name}\}}\}}"
@@ -157,10 +161,20 @@ def fill_template(template_path: str, variables: dict, sections: dict) -> str:
         if block:
             inner = block.group(1)
             rendered = "".join(
-                re.sub(r"\{\{(\w+)\}\}", lambda m: row.get(m.group(1), ""), inner)
+                re.sub(
+                    r"\{\{(\w+)\}\}",
+                    lambda m: _escape(str(row.get(m.group(1), ""))),
+                    inner,
+                )
                 for row in rows
             )
             content = content[:block.start()] + rendered + content[block.end():]
+    # Unreplaced-placeholder check — never write {{...}} markers to output
+    if re.search(r"\{\{[^#/]", content):
+        raise ValueError(
+            "fill_template: unreplaced {{...}} markers remain. "
+            "Provide values for all required variables before writing the artifact."
+        )
     return content
 ```
 
