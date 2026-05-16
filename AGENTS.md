@@ -482,14 +482,14 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 
 ## Host Support Matrix
 
-| Host | Plugin loading | Skill auto-invoke | Subagents | Commands |
-|---|---|---|---|---|
-| Claude Code | plugin.json | Yes | Yes | Yes (namespaced) |
-| Codex | — | Planned | Planned | Planned |
-| Gemini | — | Planned | Planned | Planned |
-| OpenCode | — | Planned | Planned | Planned |
+| Host | Plugin loading | Skill auto-invoke | Subagents | Commands | Adapter |
+|---|---|---|---|---|---|
+| Claude Code | plugin.json | Yes | Yes (isolated context) | Yes (namespaced) | Native |
+| Codex | AGENTS.md | No — manual skill reference | No — inline fallback | No — natural language | `adapters/codex.md` |
+| Gemini / ADK | Python agent setup | No — explicit agent per skill | Yes (AgentTool) | No — Python entrypoints | `adapters/gemini-adk.md` |
+| OpenCode | AGENTS.md + .opencode/instructions.md | No — AGENTS.md routing only | No — inline fallback | No — natural language | `adapters/opencode.md` (spec) |
 
-For non-Claude Code hosts without plugin loading: place skills in the host's equivalent skill directory and use the routing intent table above.
+For non-Claude Code hosts: see the adapter file for setup instructions. Core `skills/` and `agents/` content is unchanged across all hosts — only the invocation layer differs.
 
 ---
 
