@@ -6,7 +6,16 @@ This file provides routing guidance to AI coding agents (Claude Code, Codex, Ope
 
 Plugin namespace: `agentic-ai-engineering`
 
-This plugin provides decision-compression workflows for building agentic AI products. It covers architecture design, context engineering, multi-agent orchestration, evaluation strategy, and deployment readiness.
+This plugin provides decision-compression workflows for building production-grade agentic AI products. It covers 17 skills across six lanes:
+
+- **Architecture and design:** system design, multi-agent orchestration, single-agent workflow design, ubiquitous language
+- **Context engineering:** context engineering for agents
+- **Evaluation:** eval design and scorecard strategy
+- **Deployment and operations:** deployment readiness, observability, tool interface design, agent prototype, handoff, GitHub issues
+- **Product strategy:** opportunity framing, product strategy, economics and moats, governance and adoption
+- **Setup:** one-time repo initialization
+
+Each lane has dedicated skills with explicit routing rules. Use the tables below to match user intent to the correct skill.
 
 Skills activate automatically when user intent matches the trigger conditions below. Users can also invoke any skill directly with `/agentic-ai-engineering:<skill-name>`.
 

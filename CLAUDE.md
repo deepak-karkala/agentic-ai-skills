@@ -81,7 +81,11 @@ Skills read from `.agentic/config.yml`. This map reflects the current implemente
 | `agent_source_path` | — | `tool-interface-design` | Writes interface spec to `agent_source_path/tools/interface-spec.md`; falls back to `.agentic/artifacts/` |
 | `trace_log_path` | — | `agent-observability` | Reads existing traces when available; falls back to greenfield mode |
 
-**No planned-only consumers remain.** All 7 config fields are now read by at least one implemented skill. The schema is `version: "1"` and is complete — no new fields are required for remaining Milestone 2 work. Skills must read fields they use and ignore fields they don't. Do not add new fields without running setup again and bumping the version comment.
+**No planned-only consumers remain.** All 7 config fields have at least one implemented consumer. The contract differs by field:
+- `eval_assets_path` is the **only hard dependency** — `agent-eval-design` audit mode fails without it.
+- `design_docs_path`, `artifact_output_path`, `adr_path`, `glossary_path`, `agent_source_path`, and `trace_log_path` are **implemented optional consumers** — each skill checks for the field and uses it when present, but degrades gracefully (falls back to `.agentic/artifacts/` or greenfield mode) when absent. These fields improve quality; they do not gate execution.
+
+The schema is `version: "1"` and is complete — no new fields are required for remaining Milestone 2 work. Skills must read fields they use and ignore fields they don't. Do not add new fields without running setup again and bumping the version comment.
 
 ## Portability Note
 
