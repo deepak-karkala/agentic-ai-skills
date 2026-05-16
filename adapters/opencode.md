@@ -8,18 +8,18 @@ Implementation-ready adapter spec for the `agentic-ai-engineering` plugin on Ope
 
 ---
 
-## OpenCode architecture relevant to this adapter
+## What OpenCode supports natively
 
 OpenCode (opencode.ai) is an open-source AI coding agent that runs in the terminal. As of mid-2025, the key surfaces relevant to this adapter are:
 
-| Surface | OpenCode | Relevant to adapter |
+| Capability | OpenCode | Notes |
 |---|---|---|
-| Project instructions | `AGENTS.md` in working directory | Yes — same file, same format |
-| Custom instructions file | `.opencode/instructions.md` | Skill content goes here |
-| Slash commands | Not implemented as of mid-2025 | Entrypoints use natural language |
-| Subagent / multi-context | Not implemented | Inline fallback |
-| File writes | Yes | Same `.agentic/artifacts/` path |
-| Config reads | Manual | Surface via instructions file |
+| Plugin manifest (plugin.json) | No | Not applicable |
+| AGENTS.md routing | Yes | OpenCode reads AGENTS.md in the working directory |
+| Slash commands | No (mid-2025) | Entrypoints use natural language |
+| Subagent / multi-context | No | Inline fallback — see below |
+| File writes (artifacts) | Yes | Same `.agentic/artifacts/` path |
+| Config reads (.agentic/config.yml) | Manual | Surface via instructions file |
 
 OpenCode reads `AGENTS.md` from the working directory, which is identical to Codex behavior. This makes the adapter primarily a question of how to load skill content into the instruction surface.
 

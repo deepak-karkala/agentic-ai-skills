@@ -147,23 +147,66 @@ for skill_dir in "$REPO_ROOT/skills"/*/; do
   fi
 done
 
-# ── 6. HTML template ──────────────────────────────────────────────────────────
+# ── 6. Templates ─────────────────────────────────────────────────────────────
 header "Templates"
 
-TEMPLATE="$REPO_ROOT/templates/html/architecture-review.html"
-if [[ -f "$TEMPLATE" ]]; then
-  pass "architecture-review.html template exists"
-  placeholder_count=$(grep -c '{{[A-Z_#/][A-Z_]*}}' "$TEMPLATE" 2>/dev/null || true)
-  if [[ "$placeholder_count" -gt 0 ]]; then
-    pass "architecture-review.html contains $placeholder_count placeholder(s) (expected)"
+# HTML templates
+for html_template in architecture-review eval-scorecard rollout-readiness; do
+  TEMPLATE="$REPO_ROOT/templates/html/${html_template}.html"
+  if [[ -f "$TEMPLATE" ]]; then
+    pass "${html_template}.html template exists"
+    placeholder_count=$(grep -c '{{[A-Z_#/][A-Z_]*}}' "$TEMPLATE" 2>/dev/null || true)
+    if [[ "$placeholder_count" -gt 0 ]]; then
+      pass "${html_template}.html contains $placeholder_count placeholder(s) (expected)"
+    else
+      fail "${html_template}.html has no placeholders — template may be overwritten with rendered output"
+    fi
   else
-    fail "architecture-review.html has no placeholders — template may be overwritten with rendered output"
+    fail "${html_template}.html template not found at templates/html/"
   fi
-else
-  fail "architecture-review.html template not found at templates/html/"
-fi
+done
 
-# ── 7. No absolute local paths in committed plugin files ─────────────────────
+# Markdown templates
+for md_template in glossary handoff; do
+  TEMPLATE="$REPO_ROOT/templates/markdown/${md_template}.md"
+  if [[ -f "$TEMPLATE" ]]; then
+    pass "${md_template}.md template exists"
+    placeholder_count=$(grep -c '{{[A-Z_#/][A-Z_]*}}' "$TEMPLATE" 2>/dev/null || true)
+    if [[ "$placeholder_count" -gt 0 ]]; then
+      pass "${md_template}.md contains $placeholder_count placeholder(s) (expected)"
+    else
+      fail "${md_template}.md has no placeholders — template may be overwritten with rendered output"
+    fi
+  else
+    fail "${md_template}.md template not found at templates/markdown/"
+  fi
+done
+
+# ── 7. Adapter files ──────────────────────────────────────────────────────────
+header "Adapter files"
+
+for adapter in codex gemini-adk opencode; do
+  ADAPTER_FILE="$REPO_ROOT/adapters/${adapter}.md"
+  if [[ -f "$ADAPTER_FILE" ]]; then
+    pass "${adapter}.md adapter exists"
+    # Adapter must have a host capability table (## What ... supports)
+    if grep -q "^## What" "$ADAPTER_FILE"; then
+      pass "${adapter}.md has capability section"
+    else
+      fail "${adapter}.md missing capability section (## What ... supports)"
+    fi
+    # Adapter must not reference local absolute paths
+    if grep -qE '/Users/|/home/' "$ADAPTER_FILE"; then
+      fail "${adapter}.md contains absolute local path"
+    else
+      pass "${adapter}.md: no absolute local paths"
+    fi
+  else
+    fail "${adapter}.md adapter not found at adapters/"
+  fi
+done
+
+# ── 8. No absolute local paths in committed plugin files ─────────────────────
 header "No absolute local paths"
 
 # Check committed plugin content files only (skills, agents, commands, root docs)
