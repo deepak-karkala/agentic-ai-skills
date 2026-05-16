@@ -44,7 +44,7 @@ The plugin includes specialist subagents. Subagents return structured findings �
 - `agent-product-strategist`: delegate opportunity decomposition, wedge scoring, adoption constraint analysis, and governance risk assessment here when non-trivial. Invoke from `agentic-opportunity-framing` or `agentic-product-strategy` skills. Never invoke for greenfield brainstorming, architecture decisions, or eval design.
 
 **Milestone 2 subagents (deferred):**
-- `agent-artifact-designer`: **Gate not met — deferred to a later milestone.** Gate requires ≥2 of the 4 Phase 5 artifacts (Tasks 20–23) to need dynamic section selection, multi-table composition, or conditional rendering beyond simple `{{VARIABLE}}` substitution. Phase 5 has not been implemented; gate cannot be evaluated. Do not implement until Phase 5 artifacts are built and the gate is re-evaluated.
+- `agent-artifact-designer`: **Gate re-evaluated after Phase 5 — still not met. Deferred.** Gate requires ≥2 of the 4 Phase 5 artifacts to need dynamic section selection, multi-table composition, or conditional rendering beyond simple `{{VARIABLE}}` / `{{#SECTION}}...{{/SECTION}}` substitution. All 4 Phase 5 artifacts (eval-scorecard, rollout-readiness, glossary, handoff) are expressible with the existing rendering contract. The `{{#GLOSSARY_REFERENCE}}` conditional in handoff.md is a zero-or-one block repetition — not a distinct capability. Do not implement agent-artifact-designer until a future milestone introduces artifacts requiring genuinely new rendering logic.
 
 ### Per-Skill Delegation Rules
 
