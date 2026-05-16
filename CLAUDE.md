@@ -40,8 +40,8 @@ The plugin includes specialist subagents. Subagents return structured findings �
 - `agent-systems-architect`: delegate architecture decomposition tasks here when deeper isolated analysis is needed. Invoke from `agentic-system-design` or `multi-agent-orchestration` skills. Never invoke for greenfield design.
 - `agent-evals-auditor`: delegate eval audit tasks here. Invoke from `agent-eval-design` skill. Only when eval artifacts exist.
 
-**Milestone 2 subagents (active after Phase 4):**
-- `agent-product-strategist`: delegate product strategy and opportunity reviews here when non-trivial. Invoke from `agentic-opportunity-framing` or `agentic-product-strategy` skills.
+**Milestone 2 subagents (active):**
+- `agent-product-strategist`: delegate opportunity decomposition, wedge scoring, adoption constraint analysis, and governance risk assessment here when non-trivial. Invoke from `agentic-opportunity-framing` or `agentic-product-strategy` skills. Never invoke for greenfield brainstorming, architecture decisions, or eval design.
 
 **Milestone 2 subagents (deferred):**
 - `agent-artifact-designer`: **Gate not met — deferred to a later milestone.** Gate requires ≥2 of the 4 Phase 5 artifacts (Tasks 20–23) to need dynamic section selection, multi-table composition, or conditional rendering beyond simple `{{VARIABLE}}` substitution. Phase 5 has not been implemented; gate cannot be evaluated. Do not implement until Phase 5 artifacts are built and the gate is re-evaluated.
