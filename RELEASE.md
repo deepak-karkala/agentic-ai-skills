@@ -39,6 +39,76 @@ The following criteria must all pass before a Milestone 1 GitHub release tag is 
 
 ---
 
+## Milestone 2 Release Gate
+
+The following criteria must all pass before a Milestone 2 GitHub release tag is cut. All Milestone 1 gates continue to apply.
+
+### Structural gate (automated)
+
+- [ ] `bash scripts/validate-plugin.sh` exits 0 with 0 failures (currently 133 checks)
+- [ ] All 17 skill folders follow the naming contract: kebab-case, `SKILL.md` present, `name` matches folder
+- [ ] All `references/` files linked from SKILL.md exist
+- [ ] All 3 agent files (`agents/*.md`) have frontmatter with `name` and `description`
+- [ ] All 11 command files (`commands/*.md`) have frontmatter with `description`
+- [ ] All 5 templates (3 HTML + 2 markdown) exist and contain at least one `{{...}}` placeholder
+- [ ] All 3 adapter files (`adapters/*.md`) exist and contain a capability section (`## What ... supports`)
+- [ ] No adapter file contains absolute local paths
+
+### Skill content gate (manual)
+
+- [ ] All 17 flagship skills have: explicit triggers, explicit non-trigger exclusions, step-by-step workflow, output format, scope boundaries
+- [ ] All 17 flagship skills have at least one worked scenario in `examples/scenarios/`
+- [ ] All 10 Milestone 2 skills respect the output path convention: `artifact_output_path` or `.agentic/artifacts/` fallback
+- [ ] Strategy lane skills (`agentic-opportunity-framing`, `agentic-product-strategy`, `agentic-economics-and-moats`, `agentic-governance-and-adoption`) have explicit routing boundaries that do not overlap with M1 technical skills
+- [ ] `setup-agentic-ai-engineering` post-setup report lists all 17 skills and all 7 config fields with accurate improvement descriptions
+
+### Routing gate (manual dry-run)
+
+- [ ] `tests/routing-dry-run-m2.md` dry-run passes: all 7 new M2 skill rows have correct obvious-trigger, paraphrase-trigger, and non-trigger routing
+- [ ] 8 boundary collision cases are resolved by the tie-breaking rule (pre-build → strategy lane; post-decision → technical lane)
+- [ ] `/agentic-evals` with existing eval suite delegates to `agent-evals-auditor`
+- [ ] `/agentic-opportunity-framing` or `/agentic-product-strategy` with non-trivial input delegates to `agent-product-strategist`
+- [ ] No skill delegates to a subagent for greenfield input
+- [ ] All 5 auto-routed skills (no command wrapper) still activate via AGENTS.md intent matching
+
+### Artifact gate (manual)
+
+- [ ] `eval-scorecard.html` renders correctly from `templates/html/eval-scorecard.html` with no unreplaced `{{...}}` literals
+- [ ] `rollout-readiness.html` renders correctly from `templates/html/rollout-readiness.html` with no unreplaced `{{...}}` literals
+- [ ] `glossary.md` renders correctly from `templates/markdown/glossary.md` with correct table structure (headers outside row blocks)
+- [ ] `handoff.md` renders correctly from `templates/markdown/handoff.md` with cross-links referencing artifact filenames (not embedded content)
+- [ ] All artifact filenames follow the convention: `<artifact-type>-<agent-name>.<ext>`
+- [ ] Artifact overwrite-by-default behavior confirmed — no auto-versioned filenames
+
+### Subagent gate (manual)
+
+- [ ] `agent-product-strategist` output format matches the structured sections defined in `agents/agent-product-strategist.md`
+- [ ] Parent skills synthesize subagent output — raw subagent dumps do not surface to user
+- [ ] `agent-artifact-designer` is confirmed deferred — no file exists at `agents/agent-artifact-designer.md`
+
+### Adapter gate (manual)
+
+- [ ] Codex adapter (`adapters/codex.md`) has been smoke-tested: setup path is followable, command equivalents are accurate, inline subagent fallback is complete
+- [ ] Gemini/ADK adapter (`adapters/gemini-adk.md`) `fill_template()` example includes HTML escaping and unreplaced-placeholder check
+- [ ] OpenCode adapter (`adapters/opencode.md`) acceptance criteria checklist is present and gated on plugin API stabilization
+- [ ] Host support matrix in AGENTS.md matches the adapter files — no "Planned" entries remain for hosts with shipped adapters
+
+### Baseline comparison gate (manual)
+
+- [ ] `examples/baseline-comparison.md` covers 3 workflows across no-plugin / M1 / M2
+- [ ] M1 baseline uses only M1 skills (no M2 skills in M1 column)
+- [ ] Artifact comparison references git history, not version-suffixed filenames
+- [ ] Summary table covers ≥ 10 capability dimensions
+
+### Integrity gate
+
+- [ ] No committed file contains absolute local paths (`/Users/...`)
+- [ ] `.gitignore` anchors `/references/` and `/docs/` to root only
+- [ ] `plugin.json` namespace is `agentic-ai-engineering` and version is `"0.2.0"` for Milestone 2
+- [ ] `CONTRIBUTING.md` artifact naming table matches the templates present in `templates/`
+
+---
+
 ## What is committed vs local-only
 
 | Committed to repo | Local-only (gitignored) |
@@ -54,28 +124,22 @@ The following criteria must all pass before a Milestone 1 GitHub release tag is 
 
 ---
 
-## Portability Roadmap
+## Portability Status
 
-Milestone 1 targets Claude Code as the primary host. The skill and agent content is host-agnostic. The following adapter work is deferred:
+The `skills/`, `agents/`, `templates/`, and `examples/` content is host-agnostic and transfers unchanged to any host. Only `CLAUDE.md`, `AGENTS.md`, `.claude-plugin/plugin.json`, and the adapter files are host-specific.
 
-### Codex adapter (post-Milestone 1)
+### Codex adapter — Shipped (Milestone 2)
 
-- [ ] Map `agents/` to Codex equivalent (no native subagent concept — implement as inline instructions or tool calls)
-- [ ] Map plugin namespace to Codex skill directory convention
-- [ ] Verify `disable-model-invocation: true` equivalent enforcement
-- [ ] Validate HTML artifact write path on Codex file system model
+See `adapters/codex.md`. Covers: AGENTS.md routing, natural language command equivalents, inline subagent fallback, artifact write path, config surfacing.
 
-### Gemini / Google ADK adapter (post-Milestone 1)
+### Gemini / ADK adapter — Shipped (Milestone 2)
 
-- [ ] Map `.claude-plugin/plugin.json` to ADK manifest equivalent
-- [ ] Map namespaced commands to ADK entry point format
-- [ ] Validate subagent invocation pattern on ADK
+See `adapters/gemini-adk.md`. Covers: Python `load_skill()` setup, `AgentTool` subagent pattern, `fill_template()` rendering implementation (with HTML escaping and unreplaced-placeholder check), yaml config loading.
 
-### OpenCode adapter (post-Milestone 1)
+### OpenCode adapter — Spec complete (Milestone 2)
 
-- [ ] Assess OpenCode skill loading mechanism (TBD — depends on OpenCode plugin spec)
-- [ ] Content transfer requires no changes; adapter layer only
+See `adapters/opencode.md`. Implementation-ready spec with `.opencode/instructions.md` content, command-to-natural-language mapping, and 6-item acceptance criteria checklist. Full implementation gated on OpenCode plugin API stabilization.
 
 ### Portability principle
 
-The `skills/`, `agents/`, and `examples/` content transfers unchanged to any host. Only `CLAUDE.md`, `AGENTS.md`, and `.claude-plugin/plugin.json` are host-specific. Any portability effort starts by adapting those three files, not the skill content.
+Any portability effort starts by adapting the host-specific adapter layer, not the skill content. The adapter boundary is: if the change affects `skills/`, `agents/`, `templates/`, or `examples/`, it is a content change — not a portability adapter. Reject it or upstream it to core.
