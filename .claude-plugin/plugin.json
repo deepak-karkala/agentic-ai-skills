@@ -1,7 +1,7 @@
 {
   "name": "agentic-ai-engineering",
-  "description": "Decision compression for agentic AI engineering. Equips coding agents with senior engineer, staff engineer, tech lead, and CTO-level expertise for building production-grade agentic AI products. Covers architecture design, context engineering, multi-agent orchestration, evaluation strategy, and deployment readiness.",
-  "version": "0.1.0",
+  "description": "Decision compression for agentic AI engineering. Equips coding agents with senior engineer, staff engineer, tech lead, and CTO-level expertise for building production-grade agentic AI products. Covers strategy framing, architecture design, context engineering, multi-agent orchestration, tool interface design, evaluation strategy, observability, and deployment readiness.",
+  "version": "0.2.0",
   "author": {
     "name": "deepak-karkala"
   },
