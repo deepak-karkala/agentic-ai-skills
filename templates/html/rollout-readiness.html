@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{AGENT_NAME}} — Rollout Readiness</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-alt: #222636;
+      --border: #2d3248;
+      --accent: #7c6af7;
+      --accent-muted: #3d3566;
+      --text: #e2e5f0;
+      --text-muted: #8891b0;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #f87171;
+      --blue: #60a5fa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 32px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 32px;
+    }
+    header .plugin-badge {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    header h1 { font-size: 24px; font-weight: 600; color: var(--text); }
+    header .meta { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+
+    .verdict-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+    .verdict-label { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .verdict-value { font-size: 18px; font-weight: 600; }
+    .verdict-value.ready { color: var(--green); }
+    .verdict-value.caution { color: var(--yellow); }
+    .verdict-value.not-ready { color: var(--red); }
+    .verdict-divider { width: 1px; height: 40px; background: var(--border); }
+    .verdict-summary { color: var(--text-muted); font-size: 13px; flex: 1; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .card h2 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .card.full { grid-column: 1 / -1; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge.green { background: rgba(74,222,128,0.15); color: var(--green); }
+    .badge.yellow { background: rgba(250,204,21,0.15); color: var(--yellow); }
+    .badge.red { background: rgba(248,113,113,0.15); color: var(--red); }
+    .badge.blue { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .badge.purple { background: rgba(124,106,247,0.15); color: var(--accent); }
+
+    /* Gate checklist */
+    .gate-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .gate-row:last-child { border-bottom: none; }
+    .gate-status { flex-shrink: 0; padding-top: 2px; }
+    .gate-content { flex: 1; }
+    .gate-name { font-weight: 500; margin-bottom: 2px; font-size: 13px; }
+    .gate-note { color: var(--text-muted); font-size: 12px; }
+
+    /* Risk register */
+    .risk-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .risk-row:last-child { border-bottom: none; }
+    .risk-severity { flex-shrink: 0; width: 60px; display: flex; align-items: flex-start; padding-top: 2px; }
+    .risk-content { flex: 1; }
+    .risk-title { font-weight: 500; margin-bottom: 4px; }
+    .risk-description { color: var(--text-muted); font-size: 12px; }
+    .risk-mitigation { color: var(--blue); font-size: 12px; margin-top: 4px; }
+
+    /* Blocker list */
+    .blocker-row {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .blocker-row:last-child { border-bottom: none; }
+    .blocker-badge { flex-shrink: 0; padding-top: 2px; }
+    .blocker-text { flex: 1; font-size: 13px; }
+    .blocker-owner { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+
+    .recommendation {
+      background: linear-gradient(135deg, rgba(124,106,247,0.08), rgba(96,165,250,0.06));
+      border: 1px solid var(--accent-muted);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .recommendation h3 { color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .recommendation p { color: var(--text); font-size: 14px; line-height: 1.7; }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="plugin-badge">agentic-ai-engineering · Rollout Readiness</div>
+  <h1>{{AGENT_NAME}}</h1>
+  <div class="meta">Generated {{GENERATED_DATE}} · Skill: deployment-readiness · Command: /agentic-ai-engineering:agentic-ops</div>
+</header>
+
+<!-- READINESS VERDICT BAR -->
+<div class="verdict-bar">
+  <div>
+    <div class="verdict-label">Readiness</div>
+    <!-- Replace class with: ready | caution | not-ready -->
+    <div class="verdict-value caution">{{READINESS_VERDICT}}</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div>
+    <div class="verdict-label">Gates passed</div>
+    <div style="font-size: 18px; font-weight: 600; color: var(--text);">{{GATES_PASSED}} / {{GATES_TOTAL}}</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div>
+    <div class="verdict-label">Open blockers</div>
+    <div style="font-size: 18px; font-weight: 600; color: var(--red);">{{BLOCKER_COUNT}}</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div class="verdict-summary">{{READINESS_SUMMARY}}</div>
+</div>
+
+<!-- PRODUCTION GATE CHECKLIST + HITL POSTURE -->
+<div class="grid-2">
+  <div class="card">
+    <h2>Production Gate Checklist</h2>
+    {{#GATE_ROWS}}
+    <div class="gate-row">
+      <div class="gate-status">
+        <!-- Replace badge class: green=passed, yellow=partial, red=not-met -->
+        <span class="badge {{GATE_STATUS_CLASS}}">{{GATE_STATUS}}</span>
+      </div>
+      <div class="gate-content">
+        <div class="gate-name">{{GATE_NAME}}</div>
+        <div class="gate-note">{{GATE_NOTE}}</div>
+      </div>
+    </div>
+    {{/GATE_ROWS}}
+  </div>
+
+  <div class="card">
+    <h2>HITL Posture</h2>
+    <table>
+      <tr><th>Dimension</th><th>Setting</th></tr>
+      <tr>
+        <td>Autonomy level</td>
+        <td><span class="badge {{AUTONOMY_CLASS}}">{{AUTONOMY_LEVEL}}</span></td>
+      </tr>
+      <tr>
+        <td>Approval gates</td>
+        <td>{{HITL_APPROVAL_GATES}}</td>
+      </tr>
+      <tr>
+        <td>Override path</td>
+        <td>{{HITL_OVERRIDE_PATH}}</td>
+      </tr>
+      <tr>
+        <td>Escalation trigger</td>
+        <td>{{HITL_ESCALATION_TRIGGER}}</td>
+      </tr>
+      <tr>
+        <td>Fallback behavior</td>
+        <td>{{HITL_FALLBACK}}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- OBSERVABILITY READINESS -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Observability Readiness</h2>
+  <table>
+    <tr>
+      <th>Instrument</th>
+      <th>Status</th>
+      <th>Notes</th>
+    </tr>
+    {{#OBS_ROWS}}
+    <tr>
+      <td>{{OBS_INSTRUMENT}}</td>
+      <!-- Replace badge class: green=in-place, yellow=partial, red=missing -->
+      <td><span class="badge {{OBS_STATUS_CLASS}}">{{OBS_STATUS}}</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">{{OBS_NOTES}}</td>
+    </tr>
+    {{/OBS_ROWS}}
+  </table>
+</div>
+
+<!-- ROLLOUT RISK REGISTER -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Rollout Risk Register</h2>
+  {{#RISK_ROWS}}
+  <div class="risk-row">
+    <div class="risk-severity"><span class="badge {{RISK_SEVERITY_CLASS}}">{{RISK_SEVERITY}}</span></div>
+    <div class="risk-content">
+      <div class="risk-title">{{RISK_TITLE}}</div>
+      <div class="risk-description">{{RISK_DESCRIPTION}}</div>
+      <div class="risk-mitigation">Mitigation: {{RISK_MITIGATION}}</div>
+    </div>
+  </div>
+  {{/RISK_ROWS}}
+</div>
+
+<!-- OPEN BLOCKERS -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Open Blockers</h2>
+  {{#BLOCKER_ROWS}}
+  <div class="blocker-row">
+    <div class="blocker-badge"><span class="badge red">Blocker</span></div>
+    <div class="blocker-text">
+      {{BLOCKER_DESCRIPTION}}
+      <div class="blocker-owner">Owner: {{BLOCKER_OWNER}}</div>
+    </div>
+  </div>
+  {{/BLOCKER_ROWS}}
+</div>
+
+<!-- ROLLOUT RECOMMENDATION -->
+<div class="recommendation">
+  <h3>Rollout Recommendation</h3>
+  <p>{{ROLLOUT_RECOMMENDATION}}</p>
+</div>
+
+<footer>
+  <span>agentic-ai-engineering plugin · deployment-readiness skill</span>
+  <span>{{GENERATED_DATE}}</span>
+</footer>
+
+</body>
+</html>
