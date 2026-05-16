@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{AGENT_NAME}} — Eval Scorecard</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-alt: #222636;
+      --border: #2d3248;
+      --accent: #7c6af7;
+      --accent-muted: #3d3566;
+      --text: #e2e5f0;
+      --text-muted: #8891b0;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #f87171;
+      --blue: #60a5fa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 32px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 32px;
+    }
+    header .plugin-badge {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    header h1 { font-size: 24px; font-weight: 600; color: var(--text); }
+    header .meta { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+
+    .verdict-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+    .verdict-label { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .verdict-value { font-size: 18px; font-weight: 600; }
+    .verdict-value.strong { color: var(--green); }
+    .verdict-value.partial { color: var(--yellow); }
+    .verdict-value.weak { color: var(--red); }
+    .verdict-divider { width: 1px; height: 40px; background: var(--border); }
+    .verdict-summary { color: var(--text-muted); font-size: 13px; flex: 1; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .card h2 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .card.full { grid-column: 1 / -1; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge.green { background: rgba(74,222,128,0.15); color: var(--green); }
+    .badge.yellow { background: rgba(250,204,21,0.15); color: var(--yellow); }
+    .badge.red { background: rgba(248,113,113,0.15); color: var(--red); }
+    .badge.blue { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .badge.purple { background: rgba(124,106,247,0.15); color: var(--accent); }
+
+    /* Coverage dimension pills */
+    .dimension-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .dimension-row:last-child { border-bottom: none; }
+    .dimension-status { flex-shrink: 0; padding-top: 2px; }
+    .dimension-content { flex: 1; }
+    .dimension-name { font-weight: 500; margin-bottom: 4px; }
+    .dimension-note { color: var(--text-muted); font-size: 12px; }
+
+    /* Gap register */
+    .gap-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .gap-row:last-child { border-bottom: none; }
+    .gap-priority { flex-shrink: 0; width: 60px; display: flex; align-items: flex-start; padding-top: 2px; }
+    .gap-content { flex: 1; }
+    .gap-title { font-weight: 500; margin-bottom: 4px; }
+    .gap-description { color: var(--text-muted); font-size: 12px; }
+    .gap-fix { color: var(--blue); font-size: 12px; margin-top: 4px; }
+
+    .recommendation {
+      background: linear-gradient(135deg, rgba(124,106,247,0.08), rgba(96,165,250,0.06));
+      border: 1px solid var(--accent-muted);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .recommendation h3 { color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .recommendation p { color: var(--text); font-size: 14px; line-height: 1.7; }
+
+    .priority-list { list-style: none; }
+    .priority-list li {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .priority-list li:last-child { border-bottom: none; }
+    .priority-num { flex-shrink: 0; color: var(--accent); font-weight: 600; min-width: 18px; }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="plugin-badge">agentic-ai-engineering · Eval Scorecard</div>
+  <h1>{{AGENT_NAME}}</h1>
+  <div class="meta">Generated {{GENERATED_DATE}} · Skill: agent-eval-design · Command: /agentic-ai-engineering:agentic-evals</div>
+</header>
+
+<!-- COVERAGE VERDICT BAR -->
+<div class="verdict-bar">
+  <div>
+    <div class="verdict-label">Coverage</div>
+    <!-- Replace class with: strong | partial | weak -->
+    <div class="verdict-value partial">{{COVERAGE_VERDICT}}</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div>
+    <div class="verdict-label">Dimensions tested</div>
+    <div style="font-size: 18px; font-weight: 600; color: var(--text);">{{DIMENSIONS_TESTED}} / 6</div>
+  </div>
+  <div class="verdict-divider"></div>
+  <div class="verdict-summary">{{COVERAGE_SUMMARY}}</div>
+</div>
+
+<!-- SCORECARD COVERAGE + GRADER QUALITY -->
+<div class="grid-2">
+  <div class="card">
+    <h2>Six-Dimension Coverage</h2>
+    {{#DIMENSION_ROWS}}
+    <div class="dimension-row">
+      <div class="dimension-status">
+        <!-- Replace class with: green=tested, yellow=partial, red=absent -->
+        <span class="badge {{DIMENSION_STATUS_CLASS}}">{{DIMENSION_STATUS}}</span>
+      </div>
+      <div class="dimension-content">
+        <div class="dimension-name">{{DIMENSION_NAME}}</div>
+        <div class="dimension-note">{{DIMENSION_NOTE}}</div>
+      </div>
+    </div>
+    {{/DIMENSION_ROWS}}
+  </div>
+
+  <div class="card">
+    <h2>Grader Quality</h2>
+    <table>
+      <tr>
+        <th>Grader</th>
+        <th>Type</th>
+        <th>Quality</th>
+      </tr>
+      {{#GRADER_ROWS}}
+      <tr>
+        <td>{{GRADER_NAME}}</td>
+        <td><span class="badge blue">{{GRADER_TYPE}}</span></td>
+        <!-- Replace badge class: green=reliable, yellow=questionable, red=unreliable -->
+        <td><span class="badge {{GRADER_QUALITY_CLASS}}">{{GRADER_QUALITY}}</span></td>
+      </tr>
+      {{/GRADER_ROWS}}
+    </table>
+  </div>
+</div>
+
+<!-- EVAL ANTI-PATTERNS -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Anti-patterns Detected</h2>
+  <table>
+    <tr>
+      <th>Anti-pattern</th>
+      <th>Present</th>
+      <th>Evidence</th>
+    </tr>
+    {{#ANTIPATTERN_ROWS}}
+    <tr>
+      <td><strong>{{ANTIPATTERN_NAME}}</strong></td>
+      <!-- Replace badge class: red=present, green=absent -->
+      <td><span class="badge {{ANTIPATTERN_PRESENT_CLASS}}">{{ANTIPATTERN_PRESENT}}</span></td>
+      <td style="color: var(--text-muted); font-size: 12px;">{{ANTIPATTERN_EVIDENCE}}</td>
+    </tr>
+    {{/ANTIPATTERN_ROWS}}
+  </table>
+</div>
+
+<!-- GAP REGISTER -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Coverage Gaps</h2>
+  {{#GAP_ROWS}}
+  <div class="gap-row">
+    <div class="gap-priority"><span class="badge {{GAP_PRIORITY_CLASS}}">{{GAP_PRIORITY}}</span></div>
+    <div class="gap-content">
+      <div class="gap-title">{{GAP_TITLE}}</div>
+      <div class="gap-description">{{GAP_DESCRIPTION}}</div>
+      <div class="gap-fix">Recommended fix: {{GAP_FIX}}</div>
+    </div>
+  </div>
+  {{/GAP_ROWS}}
+</div>
+
+<!-- EVAL RECOMMENDATION -->
+<div class="recommendation">
+  <h3>Eval Recommendation</h3>
+  <p>{{EVAL_RECOMMENDATION}}</p>
+</div>
+
+<!-- IMPLEMENTATION PRIORITIES -->
+<div class="card full" style="margin-bottom: 24px;">
+  <h2>Implementation Priorities</h2>
+  <ul class="priority-list">
+    {{#PRIORITY_ITEMS}}
+    <li>
+      <span class="priority-num">{{PRIORITY_NUM}}.</span>
+      <span>{{PRIORITY_TEXT}}</span>
+    </li>
+    {{/PRIORITY_ITEMS}}
+  </ul>
+</div>
+
+<footer>
+  <span>agentic-ai-engineering plugin · agent-eval-design skill</span>
+  <span>{{GENERATED_DATE}}</span>
+</footer>
+
+</body>
+</html>
