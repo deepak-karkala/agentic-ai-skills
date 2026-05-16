@@ -440,12 +440,15 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 |---|---|---|
 | `agent-systems-architect` | `agentic-system-design`, `multi-agent-orchestration` | Architecture decomposition, tradeoff analysis, context-boundary review |
 | `agent-evals-auditor` | `agent-eval-design` | Audit-style eval inspection, evidence gathering, gap identification |
+| `agent-product-strategist` | `agentic-opportunity-framing`, `agentic-product-strategy` | Opportunity decomposition, wedge scoring, adoption constraint analysis, governance risk assessment |
 
 **Rules:**
-- `agent-systems-architect` owns architecture. It does not assess eval quality or production gates.
-- `agent-evals-auditor` owns eval audit. It does not make architecture recommendations.
+- `agent-systems-architect` owns architecture. It does not assess eval quality, production gates, or product strategy.
+- `agent-evals-auditor` owns eval audit. It does not make architecture or product recommendations.
+- `agent-product-strategist` owns opportunity and product analysis. It does not make architecture decisions or design eval scorecards.
 - Subagents return structured findings. The parent skill synthesizes and presents to the user.
-- Neither subagent spawns other subagents.
+- No subagent spawns another subagent.
+- Delegation is evidence-based, not automatic. Invoke a subagent only when inline analysis would flood the conversation with detail the user does not need to see.
 
 ---
 
@@ -461,8 +464,8 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 | `/agentic-ai-engineering:agentic-to-issues` | `agentic-to-issues` | none |
 | `/agentic-ai-engineering:agentic-prototype` | `agentic-prototype` | none |
 | `/agentic-ai-engineering:agentic-handoff` | `agentic-handoff` | none |
-| `/agentic-ai-engineering:agentic-opportunity-framing` | `agentic-opportunity-framing` | none |
-| `/agentic-ai-engineering:agentic-product-strategy` | `agentic-product-strategy` | none |
+| `/agentic-ai-engineering:agentic-opportunity-framing` | `agentic-opportunity-framing` | `agent-product-strategist` (optional — non-trivial use cases) |
+| `/agentic-ai-engineering:agentic-product-strategy` | `agentic-product-strategy` | `agent-product-strategist` (optional — multi-dimension wedge scoring) |
 | `/agentic-ai-engineering:agentic-economics-and-moats` | `agentic-economics-and-moats` | none |
 | `/agentic-ai-engineering:agentic-governance-and-adoption` | `agentic-governance-and-adoption` | none |
 
