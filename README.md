@@ -135,7 +135,7 @@ Skills without a command wrapper (`multi-agent-orchestration`, `context-engineer
 | Claude Code | Primary — full support | Native (plugin.json) |
 | Codex | Adapter shipped | [`adapters/codex.md`](adapters/codex.md) |
 | Gemini / ADK | Adapter shipped | [`adapters/gemini-adk.md`](adapters/gemini-adk.md) |
-| OpenCode | Spec complete | [`adapters/opencode.md`](adapters/opencode.md) |
+| OpenCode | Spec-complete — not yet implemented | [`adapters/opencode.md`](adapters/opencode.md) |
 
 Core `skills/` and `agents/` content is host-agnostic. Each adapter documents the invocation layer differences without modifying skill content.
 

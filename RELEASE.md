@@ -136,9 +136,9 @@ See `adapters/codex.md`. Covers: AGENTS.md routing, natural language command equ
 
 See `adapters/gemini-adk.md`. Covers: Python `load_skill()` setup, `AgentTool` subagent pattern, `fill_template()` rendering implementation (with HTML escaping and unreplaced-placeholder check), yaml config loading.
 
-### OpenCode adapter — Spec complete (Milestone 2)
+### OpenCode adapter — Spec-complete, not yet implemented (Milestone 2)
 
-See `adapters/opencode.md`. Implementation-ready spec with `.opencode/instructions.md` content, command-to-natural-language mapping, and 6-item acceptance criteria checklist. Full implementation gated on OpenCode plugin API stabilization.
+See `adapters/opencode.md`. Spec documents `.opencode/instructions.md` content, command-to-natural-language mapping, and 6-item acceptance criteria checklist. The `.opencode/instructions.md` file has not been created. Full implementation is gated on OpenCode plugin API stabilization. Do not advertise as shipped.
 
 ### Portability principle
 

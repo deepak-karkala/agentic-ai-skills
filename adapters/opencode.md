@@ -2,7 +2,7 @@
 
 Implementation-ready adapter spec for the `agentic-ai-engineering` plugin on OpenCode.
 
-**Status:** Spec-complete. Ready to implement when OpenCode's plugin API stabilizes.
+**Status:** Spec-complete — not yet implemented. The `.opencode/instructions.md` file described in this spec does not yet exist in the repository. Full implementation is gated on OpenCode plugin API stabilization.
 
 **Core `skills/` and `agents/` content is unchanged.** Only the loading layer differs.
 
