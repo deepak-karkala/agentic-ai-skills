@@ -109,6 +109,67 @@ The following criteria must all pass before a Milestone 2 GitHub release tag is 
 
 ---
 
+## Milestone 3 Release Gate
+
+The following criteria must all pass before a Milestone 3 GitHub release tag is cut. All Milestone 1 and Milestone 2 gates continue to apply.
+
+### Structural gate (automated)
+
+- [ ] `bash scripts/validate-plugin.sh` exits 0 with 0 failures (172 checks as of M3 Phase 3)
+- [ ] All 24 skill folders follow the naming contract: kebab-case, `SKILL.md` present, `name` matches folder
+- [ ] All `references/` files linked from SKILL.md exist
+- [ ] All 5 agent files (`agents/*.md`) have frontmatter with `name` and `description`
+- [ ] All 11 command files (`commands/*.md`) have frontmatter with `description`
+- [ ] All 5 templates (3 HTML + 2 markdown) exist and contain at least one `{{...}}` placeholder
+- [ ] All 3 adapter files (`adapters/*.md`) exist and contain a capability section
+- [ ] No adapter file or committed skill file contains absolute local paths
+
+### Skill content gate (manual)
+
+- [ ] All 24 skills have: explicit triggers, explicit non-trigger exclusions, step-by-step workflow, output format, scope boundaries
+- [ ] All 24 skills have at least one worked scenario in `examples/scenarios/`
+- [ ] All 7 M3 Phase 2 skills respect the output path convention: `artifact_output_path` or `.agentic/artifacts/` fallback
+- [ ] All 7 M3 Phase 2 skills have explicit routing boundaries against adjacent M1/M2 skills (no collision)
+- [ ] `setup-agentic-ai-engineering` post-setup report lists all 24 skills and all 7 config fields
+
+### Routing gate (manual dry-run)
+
+- [ ] All 13 auto-routed skills (no command wrapper) activate via AGENTS.md intent matching
+- [ ] All 7 M3 Phase 2 skills have correct trigger and non-trigger routing in AGENTS.md
+- [ ] M3 Phase 2 overlap-zone disambiguation table in AGENTS.md correctly resolves all boundary collision cases
+- [ ] `incident-investigation` delegates to `agent-reliability-engineer` when multi-layer failure classification exceeds ~500 tokens inline
+- [ ] `latency-and-cost-optimization` delegates to `agent-cost-performance-analyst` for detailed component breakdowns
+- [ ] No skill delegates to a subagent for greenfield or simple single-bottleneck input
+
+### Subagent gate (manual)
+
+- [ ] `agent-product-strategist` output format matches the structured sections defined in `agents/agent-product-strategist.md`
+- [ ] `agent-reliability-engineer` output format matches the structured sections defined in `agents/agent-reliability-engineer.md`; invoked from `incident-investigation` and `hallucination-containment`; does not overlap `agent-evals-auditor` (grader quality) or `agent-systems-architect` (topology)
+- [ ] `agent-cost-performance-analyst` output format matches the structured sections defined in `agents/agent-cost-performance-analyst.md`; invoked from `latency-and-cost-optimization`; does not overlap `agentic-economics-and-moats` (product-level unit economics)
+- [ ] Parent skills synthesize subagent output — raw subagent dumps do not surface to user
+- [ ] `agent-artifact-designer` is confirmed deferred — no file exists at `agents/agent-artifact-designer.md`; gate re-evaluated at M3 Phase 3 (Task 14) and still not met; all five artifact types remain expressible with scalar substitution and block repetition only
+
+### Artifact gate (manual)
+
+- [ ] All 5 artifact types have rendered example outputs in `examples/outputs/` with no unreplaced `{{...}}` literals
+- [ ] `tests/fixtures/rendering-variables.json` exists and is consistent with the variable/block names used in `templates/`
+
+### Adapter gate (manual)
+
+- [ ] Codex adapter (`adapters/codex.md`) references all 24 skills in routing guidance; inline subagent fallback is complete
+- [ ] Gemini/ADK adapter (`adapters/gemini-adk.md`) references all 24 skills
+- [ ] OpenCode adapter (`adapters/opencode.md`) spec-complete status is documented accurately
+
+### Integrity gate
+
+- [ ] No committed file contains absolute local paths (`/Users/...`)
+- [ ] `.gitignore` anchors `/references/` and `/docs/` to root only
+- [ ] `plugin.json` version is updated to reflect the M3 release
+- [ ] `CONTRIBUTING.md` artifact naming table matches the templates present in `templates/`
+- [ ] AGENTS.md and CLAUDE.md are consistent: every skill and subagent listed in one is listed in the other
+
+---
+
 ## What is committed vs local-only
 
 | Committed to repo | Local-only (gitignored) |
