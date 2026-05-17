@@ -281,6 +281,56 @@ else
   fail "tests/fixtures/rendering-variables.json missing — rendering variable registry required"
 fi
 
+# ── 10. Smoke-test evidence ───────────────────────────────────────────────────
+header "Smoke-test evidence"
+
+for smoke_file in codex-smoke-test gemini-adk-smoke-test; do
+  SMOKE="$REPO_ROOT/tests/smoke/${smoke_file}.md"
+  if [[ -f "$SMOKE" ]]; then
+    pass "tests/smoke/${smoke_file}.md exists"
+    # Check file is non-trivial (more than 5 lines)
+    line_count=$(wc -l < "$SMOKE" 2>/dev/null || echo 0)
+    if [[ "$line_count" -gt 5 ]]; then
+      pass "tests/smoke/${smoke_file}.md is non-trivial (${line_count} lines)"
+    else
+      fail "tests/smoke/${smoke_file}.md appears empty or trivial (${line_count} lines)"
+    fi
+  else
+    fail "tests/smoke/${smoke_file}.md missing — smoke-test evidence required for public release"
+  fi
+done
+
+# ── 11. Routing dry-run evidence ──────────────────────────────────────────────
+header "Routing dry-run evidence"
+
+for dry_run_file in routing-dry-run-m2 routing-dry-run-m3; do
+  DRY_RUN="$REPO_ROOT/tests/${dry_run_file}.md"
+  if [[ -f "$DRY_RUN" ]]; then
+    pass "tests/${dry_run_file}.md exists"
+  else
+    fail "tests/${dry_run_file}.md missing — routing dry-run evidence required for public release"
+  fi
+done
+
+# ── 12. Baseline comparison evidence ─────────────────────────────────────────
+header "Baseline comparison evidence"
+
+for baseline_file in baseline-comparison baseline-comparison-m3; do
+  BASELINE="$REPO_ROOT/examples/${baseline_file}.md"
+  if [[ -f "$BASELINE" ]]; then
+    pass "examples/${baseline_file}.md exists"
+    # Check file is non-trivial (more than 20 lines)
+    line_count=$(wc -l < "$BASELINE" 2>/dev/null || echo 0)
+    if [[ "$line_count" -gt 20 ]]; then
+      pass "examples/${baseline_file}.md is non-trivial (${line_count} lines)"
+    else
+      fail "examples/${baseline_file}.md appears too short (${line_count} lines) — comparison may be incomplete"
+    fi
+  else
+    fail "examples/${baseline_file}.md missing — baseline comparison required for public release"
+  fi
+done
+
 echo
 echo "══════════════════════════════════"
 echo "  Results: $PASS passed, $FAIL failed"
