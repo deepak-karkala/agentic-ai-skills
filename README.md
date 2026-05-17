@@ -28,6 +28,13 @@ It answers the hard questions quickly — across the full lifecycle of an agenti
 - What guardrails and HITL gates are required?
 - What should I trace and circuit-break?
 - What is the rollout and incident-response posture?
+- How do I investigate a production incident systematically?
+- How do I contain hallucinations and design grounding checks?
+- How do I optimize agent latency and cost per task?
+- What security threats should I harden against before launch?
+- How do I design human-in-the-loop approval gates and escalation ladders?
+- How do I design the user interface for agent transparency and trust?
+- Which trace span caused this bad output?
 
 The plugin provides opinionated decision frameworks, playbooks, anti-pattern detectors, checklists, architecture templates, and HTML/Markdown artifacts — not generic AI advice.
 
@@ -125,7 +132,7 @@ Skills without a command wrapper (`multi-agent-orchestration`, `context-engineer
 .
 ├── .claude-plugin/plugin.json     # Plugin manifest
 ├── skills/                        # Domain skills (24 skills across 6 lanes)
-├── agents/                        # Specialist subagents (3)
+├── agents/                        # Specialist subagents (5)
 ├── commands/                      # User-facing entry point wrappers (11)
 ├── adapters/                      # Host adapter guides (Codex, Gemini/ADK, OpenCode)
 ├── templates/html/                # HTML artifact templates (3)
@@ -147,6 +154,42 @@ Skills without a command wrapper (`multi-agent-orchestration`, `context-engineer
 | OpenCode | Spec-complete — not yet implemented | [`adapters/opencode.md`](adapters/opencode.md) |
 
 Core `skills/` and `agents/` content is host-agnostic. Each adapter documents the invocation layer differences without modifying skill content.
+
+---
+
+## Artifacts Produced
+
+The plugin writes persistent artifacts to disk — not just conversational output:
+
+| Artifact | Format | Written by |
+|---|---|---|
+| Architecture review | HTML | `agentic-system-design` via `/agentic-arch-review` |
+| Eval scorecard | HTML | `agent-eval-design` via `/agentic-evals` |
+| Rollout readiness report | HTML | `deployment-readiness` via `/agentic-ops` |
+| Glossary | Markdown | `agentic-ubiquitous-language` |
+| Project handoff | Markdown | `agentic-handoff` via `/agentic-handoff` |
+
+Artifact path is configured via `artifact_output_path` in `.agentic/config.yml` (set up with `/agentic-ai-engineering:setup-agentic-ai-engineering`). All skills fall back to `.agentic/artifacts/` if not configured. Example rendered outputs are in [`examples/outputs/`](examples/outputs/).
+
+---
+
+## What Works Today
+
+| Capability | Status | Notes |
+|---|---|---|
+| All 24 skills (Claude Code) | Working | Native plugin; full auto-routing, subagents, artifacts |
+| All 5 subagents (Claude Code) | Working | Isolated context; parent skills synthesize output |
+| Codex adapter | Shipped | Manual skill reference; no subagent delegation; see `adapters/codex.md` |
+| Gemini/ADK adapter | Shipped | Python `AgentTool` pattern; see `adapters/gemini-adk.md` |
+| OpenCode adapter | Spec-complete, not yet implemented | `.opencode/instructions.md` not created; gated on plugin API |
+| HTML artifacts | Working | 3 templates; rendered from skill output with placeholder substitution |
+| Markdown artifacts | Working | 2 templates (glossary, handoff) |
+
+**Best for:**
+- Teams building production agentic AI products from scratch who need structured decision frameworks, not generic LLM advice
+- Engineers debugging agent failures in production who want systematic fault classification, trace diagnosis, or cost attribution
+- Staff engineers and tech leads who need artifact-grade deliverables (architecture reviews, eval scorecards, rollout reports) shareable with stakeholders
+- Teams adopting agents in regulated industries who need governance controls, HITL policy design, and compliance framing
 
 ---
 
