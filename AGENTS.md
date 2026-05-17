@@ -6,12 +6,12 @@ This file provides routing guidance to AI coding agents (Claude Code, Codex, Ope
 
 Plugin namespace: `agentic-ai-engineering`
 
-This plugin provides decision-compression workflows for building production-grade agentic AI products. It covers 17 skills across six lanes:
+This plugin provides decision-compression workflows for building production-grade agentic AI products. It covers 24 skills across six lanes:
 
-- **Architecture and design:** system design, multi-agent orchestration, single-agent workflow design, ubiquitous language
+- **Architecture and design:** system design, multi-agent orchestration, single-agent workflow design, ubiquitous language, agent UI patterns
 - **Context engineering:** context engineering for agents
-- **Evaluation:** eval design and scorecard strategy
-- **Deployment and operations:** deployment readiness, observability, tool interface design, agent prototype, handoff, GitHub issues
+- **Evaluation and reliability:** eval design and scorecard strategy, incident investigation, hallucination containment, trace error analysis
+- **Deployment and operations:** deployment readiness, observability, tool interface design, latency and cost optimization, agentic security, human-in-the-loop patterns, agent prototype, handoff, GitHub issues
 - **Product strategy:** opportunity framing, product strategy, economics and moats, governance and adoption
 - **Setup:** one-time repo initialization
 
@@ -69,6 +69,51 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 | Configure circuit breakers (cost, loop, tool failure) | `agent-observability` | auto |
 | Connect production monitoring to the eval improvement flywheel | `agent-observability` | auto |
 | Select an observability platform (LangSmith, Langfuse, Datadog) | `agent-observability` | auto |
+
+### Reliability and incident response
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Investigate a production agent incident or run a post-mortem | `incident-investigation` | auto |
+| Identify which fault layer caused a production failure | `incident-investigation` | auto |
+| Reconstruct a failure timeline from logs and spans | `incident-investigation` | auto |
+| Contain or prevent agent hallucinations | `hallucination-containment` | auto |
+| Design a grounding check or citation requirement | `hallucination-containment` | auto |
+| Enforce "I don't know" behavior when confidence is insufficient | `hallucination-containment` | auto |
+| Read a trace to find the root cause span for a bad output | `trace-error-analysis` | auto |
+| Classify a trace failure using TRAIL / MAST / six-bucket taxonomy | `trace-error-analysis` | auto |
+| Replay a trace to confirm a fix hypothesis | `trace-error-analysis` | auto |
+
+### Performance, cost, and security
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Reduce token cost or inference latency for an agent workflow | `latency-and-cost-optimization` | auto |
+| Decide whether prompt caching or model routing is the right lever | `latency-and-cost-optimization` | auto |
+| Break down cost by component (input tokens, tools, output tokens) | `latency-and-cost-optimization` | auto |
+| Design threat mitigations for prompt injection, tool abuse, or data exfiltration | `agentic-security` | auto |
+| Assign tool permission tiers and configure dangerous action gating | `agentic-security` | auto |
+| Design an audit trail for agent actions by autonomy tier | `agentic-security` | auto |
+
+### Human-in-the-loop design
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Design an approval gate for a specific agent action | `human-in-the-loop-patterns` | auto |
+| Select the right HITL model (fully automated to human-as-teacher) | `human-in-the-loop-patterns` | auto |
+| Define the bounded autonomy contract for an agent | `human-in-the-loop-patterns` | auto |
+| Design an escalation ladder for a supervised workflow | `human-in-the-loop-patterns` | auto |
+| Capture human overrides and feed them back into the eval pipeline | `human-in-the-loop-patterns` | auto |
+
+### Agent UI design
+
+| User intent | Primary skill | Entry command |
+|---|---|---|
+| Design the user interface for an agent product | `agent-ui-patterns` | auto |
+| Design streaming step cards or activity feed for an agent | `agent-ui-patterns` | auto |
+| Design Intent Preview for irreversible agent actions | `agent-ui-patterns` | auto |
+| Address over-trust (users rubber-stamping) or active distrust in agent UI | `agent-ui-patterns` | auto |
+| Design confidence visualization or explainability components | `agent-ui-patterns` | auto |
 
 ### Production and deployment
 
@@ -441,6 +486,132 @@ Map user intent to the correct skill. If a request matches multiple skills, use 
 
 ---
 
+### `latency-and-cost-optimization`
+
+**Trigger on:**
+- "How do I reduce the cost of this agent?"
+- "My agent is too slow — how do I optimize latency?"
+- "Which parts of this agent pipeline are most expensive?"
+- "Should I cache this prompt response?"
+- "How do I route between models to reduce cost?"
+- "Break down where my agent is spending tokens"
+- "Is prompt caching worth it for this workflow?"
+
+**Do not trigger on:**
+- Unit economics and product-level margin → use `agentic-economics-and-moats`
+- General model cost comparison with no specific agent context — answer directly
+- Architecture decisions about which agent to build → use `agentic-system-design`
+
+---
+
+### `agentic-security`
+
+**Trigger on:**
+- "What security threats should I design against for this agent?"
+- "How do I prevent prompt injection in this agent?"
+- "How do I handle secrets in my agent's context?"
+- "What permission tier should this tool have?"
+- "Design the audit trail for this agent's actions"
+- "How do I prevent data exfiltration through tool calls?"
+- "What should I do before giving this agent admin access?"
+
+**Do not trigger on:**
+- Production readiness gates (security as one input among many) → use `deployment-readiness`
+- Governance and compliance framing → use `agentic-governance-and-adoption`
+- General API security with no agentic AI context — answer directly
+
+---
+
+### `incident-investigation`
+
+**Trigger on:**
+- "An agent incident just happened — help me investigate"
+- "We had a mass failure — which layer caused it?"
+- "Run a post-mortem on this agent failure"
+- "Walk me through how to diagnose this incident"
+- "Help me reconstruct what went wrong in production"
+- "The agent behaved badly in production — where do I start?"
+
+**Do not trigger on:**
+- Reading a specific trace to identify the root cause span → use `trace-error-analysis`
+- Designing observability instrumentation → use `agent-observability`
+- One-off debugging with no incident framing → use `trace-error-analysis`
+
+---
+
+### `hallucination-containment`
+
+**Trigger on:**
+- "My agent is making things up — how do I stop it?"
+- "How do I detect when the agent is hallucinating?"
+- "The agent cites sources that don't exist"
+- "Design a grounding check for this agent"
+- "How do I enforce 'I don't know' behavior?"
+- "The agent confidently answers when it shouldn't"
+- "Add citation requirements to this agent"
+
+**Do not trigger on:**
+- Eval strategy for measuring hallucination frequency → use `agent-eval-design`
+- Context design to prevent truncation causing hallucinations → use `context-engineering-for-agents`
+- General "what is hallucination?" with no specific agent — answer directly
+
+---
+
+### `human-in-the-loop-patterns`
+
+**Trigger on:**
+- "Design the approval gate for this agent action"
+- "When should the agent wait for human review vs. proceed autonomously?"
+- "How do I define the bounded autonomy contract for this agent?"
+- "Design the escalation ladder for this workflow"
+- "What HITL model fits this use case?"
+- "How do I capture human overrides and feed them back into evals?"
+- "Design the timeout and audit mechanism for this approval gate"
+
+**Do not trigger on:**
+- UI components and layout for approval (how the gate looks to users) → use `agent-ui-patterns`
+- Governance policy and org-level trust frameworks → use `agentic-governance-and-adoption`
+- High-level HITL posture as part of deployment readiness → use `deployment-readiness`
+
+---
+
+### `trace-error-analysis`
+
+**Trigger on:**
+- "Help me read this trace — the agent returned the wrong answer"
+- "Which span caused this failure?"
+- "I have a LangSmith/Langfuse trace and a bad output — walk me through it"
+- "The agent looped — find the root cause span"
+- "Diagnose this agent failure from the trace"
+- "Walk me through this trace"
+- "The agent hallucinated — which tool call went wrong?"
+
+**Do not trigger on:**
+- Designing the observability instrumentation that captures traces → use `agent-observability`
+- Full incident post-mortem including fault layer and durable fix design → use `incident-investigation`
+- No trace available — this skill requires trace evidence
+
+---
+
+### `agent-ui-patterns`
+
+**Trigger on:**
+- "Design the UI for this agent"
+- "What should the interface show while the agent is running?"
+- "How do we communicate uncertainty to users?"
+- "Design the approval interface for this agent"
+- "Users are rubber-stamping the agent output — how do we fix that?"
+- "Design the activity feed for this agent"
+- "How should we show agent reasoning to users?"
+- "Users have stopped trusting the agent — how do we fix that?"
+
+**Do not trigger on:**
+- Technical approval gate mechanism (trigger conditions, validation, audit records) → use `human-in-the-loop-patterns`
+- Governance policy and org-level trust frameworks → use `agentic-governance-and-adoption`
+- Deployment gate checklists → use `deployment-readiness`
+
+---
+
 ## Subagent Routing
 
 Subagents run in isolated context and are invoked by skills when specialist analysis is needed.
@@ -518,6 +689,29 @@ Some requests sit at the boundary between the strategy lane (Tasks 9–12) and t
 | "We're handing this project to a new team" | `agentic-handoff` | Continuity document, not governance or strategy |
 
 **Tie-breaking rule:** When a request touches both strategy and technical lanes, prefer the strategy-lane skill if the decision hasn't been made yet (pre-build); prefer the technical-lane skill if the system is already being built or deployed (post-decision).
+
+### M3 Phase 2 Skill Overlap Zones
+
+These requests sit at the boundaries between the seven new M3 skills and existing skills:
+
+| Request | Correct skill | Routing rationale |
+|---|---|---|
+| "How do I reduce the cost of this agent?" | `latency-and-cost-optimization` | Token-level optimization and model routing — not product economics |
+| "Will our margins survive at scale?" | `agentic-economics-and-moats` | Product-level unit economics and pricing, not per-request token tuning |
+| "What security threats should I design against?" | `agentic-security` | Threat taxonomy and mitigation — not a deployment readiness gate |
+| "Is this agent safe to deploy?" | `deployment-readiness` | Production gate checklist — security is one input; for threat-specific hardening use `agentic-security` |
+| "An incident just happened — help me investigate" | `incident-investigation` | Post-mortem workflow: fault layer identification and timeline reconstruction |
+| "Help me read this trace — the agent returned the wrong answer" | `trace-error-analysis` | Trace-reading technique: backward trace from bad output to root cause span |
+| "Design circuit breakers and alerts" | `agent-observability` | Proactive instrumentation design — not reactive incident analysis |
+| "My agent is hallucinating — how do I stop it?" | `hallucination-containment` | Containment patterns: grounding checks, citations, verification layers |
+| "Measure hallucination rate in my evals" | `agent-eval-design` | Measuring frequency — not containment design |
+| "Design the approval gate for this agent" | `human-in-the-loop-patterns` | Technical gate mechanism: trigger, content, audit, timeout, escalation |
+| "Design the UI for the approval step" | `agent-ui-patterns` | UI layer: Intent Preview, Autonomy Dial, confidence visualization |
+| "What HITL policy should we require for compliance?" | `agentic-governance-and-adoption` | Governance policy — not gate mechanism design |
+| "Design the UI for this agent" | `agent-ui-patterns` | UI architecture: layout, streaming, transparency, Calibrated Trust |
+| "Design the UX for our agent — we want users to trust it" | `agent-ui-patterns` | Trust calibration design — not governance or adoption planning |
+
+---
 
 ### Phase 3 Technical Skill Overlap Zones
 

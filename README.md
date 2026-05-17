@@ -72,7 +72,7 @@ Run these commands to invoke the plugin's main workflows:
 | `/agentic-ai-engineering:agentic-prototype` | Scope a minimal working prototype from an agent design |
 | `/agentic-ai-engineering:agentic-handoff` | Produce a structured handoff artifact from a completed agent project |
 
-Skills without a command wrapper (`multi-agent-orchestration`, `context-engineering-for-agents`, `single-agent-workflow-design`, `tool-interface-design`, `agent-observability`, `agentic-ubiquitous-language`) are auto-routed by intent — describe what you need and the plugin selects the right skill.
+Skills without a command wrapper (`multi-agent-orchestration`, `context-engineering-for-agents`, `single-agent-workflow-design`, `tool-interface-design`, `agent-observability`, `agentic-ubiquitous-language`, `latency-and-cost-optimization`, `agentic-security`, `incident-investigation`, `hallucination-containment`, `human-in-the-loop-patterns`, `trace-error-analysis`, `agent-ui-patterns`) are auto-routed by intent — describe what you need and the plugin selects the right skill.
 
 ---
 
@@ -93,7 +93,14 @@ Skills without a command wrapper (`multi-agent-orchestration`, `context-engineer
 | `agentic-ubiquitous-language` | Architecture | Shared vocabulary, glossary artifact, term disambiguation |
 | `agent-eval-design` | Reliability | Eval strategy, six-dimension scorecard, grader types, regression testing |
 | `agent-observability` | Reliability | Trace design, span taxonomy, circuit breakers, alert thresholds |
+| `incident-investigation` | Reliability | Failure timeline, six fault layers, immediate containment, durable fix design |
+| `hallucination-containment` | Reliability | Four hallucination modes, grounding checks, citation requirements, verification layer design |
+| `trace-error-analysis` | Reliability | Backward-tracing diagnostic, span classification, error taxonomy, replay strategy |
 | `deployment-readiness` | Production | Production gates, guardrails, HITL design, rollout posture |
+| `latency-and-cost-optimization` | Production | Token usage, model routing, caching, parallelization, latency-cost tradeoffs |
+| `agentic-security` | Production | Eight-threat taxonomy, tool permissions, secret handling, dangerous action gating, audit trail |
+| `human-in-the-loop-patterns` | Production | HITL model selection, approval gate design, bounded autonomy contract, escalation ladder |
+| `agent-ui-patterns` | Architecture | Dual-panel layout, streaming step cards, Intent Preview, Autonomy Dial, Calibrated Trust |
 | `agentic-to-issues` | Workflow | Architecture-to-GitHub-issues translation with acceptance criteria |
 | `agentic-prototype` | Workflow | Minimal prototype scoping from an agent design |
 | `agentic-handoff` | Workflow | Structured handoff artifact from a completed agent project |
@@ -115,7 +122,7 @@ Skills without a command wrapper (`multi-agent-orchestration`, `context-engineer
 ```
 .
 ├── .claude-plugin/plugin.json     # Plugin manifest
-├── skills/                        # Domain skills (17 skills across 6 lanes)
+├── skills/                        # Domain skills (24 skills across 6 lanes)
 ├── agents/                        # Specialist subagents (3)
 ├── commands/                      # User-facing entry point wrappers (11)
 ├── adapters/                      # Host adapter guides (Codex, Gemini/ADK, OpenCode)

@@ -62,12 +62,19 @@ Use this table to decide whether to stay inline or delegate to a subagent. Deleg
 | `tool-interface-design` | — | none — stays inline | All analysis inline |
 | `single-agent-workflow-design` | — | none — stays inline | All analysis inline |
 | `agent-observability` | — | none — stays inline | All analysis inline |
+| `latency-and-cost-optimization` | — | none — stays inline | All analysis inline |
+| `agentic-security` | — | none — stays inline | All analysis inline |
+| `incident-investigation` | — | none — stays inline | All analysis inline |
+| `hallucination-containment` | — | none — stays inline | All analysis inline |
+| `human-in-the-loop-patterns` | — | none — stays inline | All analysis inline |
+| `trace-error-analysis` | — | none — stays inline | All analysis inline |
+| `agent-ui-patterns` | — | none — stays inline | All analysis inline |
 
 **Structured output requirement:** When a subagent is invoked, the parent skill must synthesize its structured output into the parent's own output format. Never surface raw subagent output to the user — synthesize it into the parent skill's artifact.
 
 ## Config Field Consumption Map
 
-Skills read from `.agentic/config.yml`. This map reflects the current implemented state of the plugin after Milestone 1 and Milestone 2 Phases 1–3.
+Skills read from `.agentic/config.yml`. This map reflects the current implemented state of the plugin after Milestone 1, Milestone 2, and Milestone 3 Phase 2.
 
 ### Active consumers (all implemented)
 
@@ -75,7 +82,7 @@ Skills read from `.agentic/config.yml`. This map reflects the current implemente
 |---|---|---|---|
 | `eval_assets_path` | `agent-eval-design` (audit mode) | — | Only hard dependency in the plugin |
 | `design_docs_path` | — | `agentic-system-design`, `multi-agent-orchestration`, `agentic-to-issues`, `agentic-handoff`, `single-agent-workflow-design` | Skills read existing docs before generating recommendations |
-| `artifact_output_path` | — | `agentic-system-design` (HTML artifact), `agentic-to-issues`, `agentic-prototype`, `agentic-handoff`, `agentic-opportunity-framing`, `agentic-product-strategy`, `agentic-economics-and-moats`, `agentic-governance-and-adoption`, `tool-interface-design`, `single-agent-workflow-design`, `agent-observability` | Falls back to `.agentic/artifacts/` if absent |
+| `artifact_output_path` | — | `agentic-system-design` (HTML artifact), `agentic-to-issues`, `agentic-prototype`, `agentic-handoff`, `agentic-opportunity-framing`, `agentic-product-strategy`, `agentic-economics-and-moats`, `agentic-governance-and-adoption`, `tool-interface-design`, `single-agent-workflow-design`, `agent-observability`, `latency-and-cost-optimization`, `agentic-security`, `incident-investigation`, `hallucination-containment`, `human-in-the-loop-patterns`, `trace-error-analysis`, `agent-ui-patterns` | Falls back to `.agentic/artifacts/` if absent |
 | `adr_path` | — | `agentic-system-design` | Provides ADR context for architecture decisions |
 | `glossary_path` | — | `agentic-ubiquitous-language` | Reads existing glossary before generating; extends rather than replaces |
 | `agent_source_path` | — | `tool-interface-design` | Writes interface spec to `agent_source_path/tools/interface-spec.md`; falls back to `.agentic/artifacts/` |
@@ -85,7 +92,7 @@ Skills read from `.agentic/config.yml`. This map reflects the current implemente
 - `eval_assets_path` is the **only hard dependency** — `agent-eval-design` audit mode fails without it.
 - `design_docs_path`, `artifact_output_path`, `adr_path`, `glossary_path`, `agent_source_path`, and `trace_log_path` are **implemented optional consumers** — each skill checks for the field and uses it when present, but degrades gracefully (falls back to `.agentic/artifacts/` or greenfield mode) when absent. These fields improve quality; they do not gate execution.
 
-The schema is `version: "1"` and is complete — no new fields are required for remaining Milestone 2 work. Skills must read fields they use and ignore fields they don't. Do not add new fields without running setup again and bumping the version comment.
+The schema is `version: "1"` and is complete — no new fields are required for remaining Milestone 3 work. Skills must read fields they use and ignore fields they don't. Do not add new fields without running setup again and bumping the version comment.
 
 ## Portability Note
 
