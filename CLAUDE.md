@@ -43,6 +43,10 @@ The plugin includes specialist subagents. Subagents return structured findings �
 **Milestone 2 subagents (active):**
 - `agent-product-strategist`: delegate opportunity decomposition, wedge scoring, adoption constraint analysis, and governance risk assessment here when non-trivial. Invoke from `agentic-opportunity-framing` or `agentic-product-strategy` skills. Never invoke for greenfield brainstorming, architecture decisions, or eval design.
 
+**Milestone 3 subagents (active):**
+- `agent-reliability-engineer`: delegate deep reliability analysis here — failure mode classification, hallucination pattern assessment, reliability gap identification, and eval coverage review for reliability dimensions. Invoke from `incident-investigation`, `hallucination-containment`, or `agent-eval-design` when the analysis would exceed ~500 tokens inline. Never invoke for architecture decomposition or cost/latency optimization.
+- `agent-cost-performance-analyst`: delegate latency/cost decomposition, bottleneck prioritization, and optimization tradeoff synthesis here. Invoke from `latency-and-cost-optimization` when a detailed component-by-component breakdown would exceed ~500 tokens inline. Never invoke for architecture decisions or reliability/incident analysis.
+
 **Milestone 2 subagents (deferred):**
 - `agent-artifact-designer`: **Gate re-evaluated after Phase 5 — still not met. Deferred.** Gate requires ≥2 of the 4 Phase 5 artifacts to need dynamic section selection, multi-table composition, or conditional rendering beyond simple `{{VARIABLE}}` / `{{#SECTION}}...{{/SECTION}}` substitution. All 4 Phase 5 artifacts (eval-scorecard, rollout-readiness, glossary, handoff) are expressible with the existing rendering contract. The `{{#GLOSSARY_REFERENCE}}` conditional in handoff.md is a zero-or-one block repetition — not a distinct capability. Do not implement agent-artifact-designer until a future milestone introduces artifacts requiring genuinely new rendering logic.
 
@@ -64,8 +68,8 @@ Use this table to decide whether to stay inline or delegate to a subagent. Deleg
 | `agent-observability` | — | none — stays inline | All analysis inline |
 | `latency-and-cost-optimization` | — | none — stays inline | All analysis inline |
 | `agentic-security` | — | none — stays inline | All analysis inline |
-| `incident-investigation` | — | none — stays inline | All analysis inline |
-| `hallucination-containment` | — | none — stays inline | All analysis inline |
+| `incident-investigation` | Complex incident with multi-layer failure modes requiring structured classification before synthesis | `agent-reliability-engineer` | Single fault layer; user has already identified the cause |
+| `hallucination-containment` | Multiple hallucination modes active; evidence-based mode classification would exceed ~500 tokens inline | `agent-reliability-engineer` | Single mode identified; straightforward containment pattern |
 | `human-in-the-loop-patterns` | — | none — stays inline | All analysis inline |
 | `trace-error-analysis` | — | none — stays inline | All analysis inline |
 | `agent-ui-patterns` | — | none — stays inline | All analysis inline |

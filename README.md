@@ -114,6 +114,8 @@ Skills without a command wrapper (`multi-agent-orchestration`, `context-engineer
 | `agent-systems-architect` | Isolated architecture decomposition and tradeoff analysis |
 | `agent-evals-auditor` | Audit-style eval inspection and evidence gathering |
 | `agent-product-strategist` | Opportunity decomposition, wedge scoring, adoption constraint analysis, governance risk |
+| `agent-reliability-engineer` | Failure mode classification, hallucination pattern assessment, reliability gap identification |
+| `agent-cost-performance-analyst` | Latency/cost decomposition by component, bottleneck prioritization, optimization tradeoff synthesis |
 
 ---
 

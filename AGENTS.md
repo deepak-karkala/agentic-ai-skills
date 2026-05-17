@@ -621,11 +621,15 @@ Subagents run in isolated context and are invoked by skills when specialist anal
 | `agent-systems-architect` | `agentic-system-design`, `multi-agent-orchestration` | Architecture decomposition, tradeoff analysis, context-boundary review |
 | `agent-evals-auditor` | `agent-eval-design` | Audit-style eval inspection, evidence gathering, gap identification |
 | `agent-product-strategist` | `agentic-opportunity-framing`, `agentic-product-strategy` | Opportunity decomposition, wedge scoring, adoption constraint analysis, governance risk assessment |
+| `agent-reliability-engineer` | `incident-investigation`, `hallucination-containment`, `agent-eval-design` | Failure mode classification, hallucination pattern assessment, reliability gap identification, eval coverage review for reliability dimensions |
+| `agent-cost-performance-analyst` | `latency-and-cost-optimization` | Latency/cost decomposition by component, bottleneck prioritization, optimization tradeoff synthesis |
 
 **Rules:**
 - `agent-systems-architect` owns architecture. It does not assess eval quality, production gates, or product strategy.
 - `agent-evals-auditor` owns eval audit. It does not make architecture or product recommendations.
 - `agent-product-strategist` owns opportunity and product analysis. It does not make architecture decisions or design eval scorecards.
+- `agent-reliability-engineer` owns reliability analysis. It does not design architecture, optimize costs, or audit eval suite structure.
+- `agent-cost-performance-analyst` owns cost/latency decomposition. It does not make architecture decisions or assess reliability/incident root causes.
 - Subagents return structured findings. The parent skill synthesizes and presents to the user.
 - No subagent spawns another subagent.
 - Delegation is evidence-based, not automatic. Invoke a subagent only when inline analysis would flood the conversation with detail the user does not need to see.
