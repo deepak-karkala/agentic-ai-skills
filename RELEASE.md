@@ -84,7 +84,7 @@ The following criteria must all pass before a Milestone 2 GitHub release tag is 
 
 - [ ] `agent-product-strategist` output format matches the structured sections defined in `agents/agent-product-strategist.md`
 - [ ] Parent skills synthesize subagent output — raw subagent dumps do not surface to user
-- [ ] `agent-artifact-designer` is confirmed deferred — no file exists at `agents/agent-artifact-designer.md`
+- [ ] `agent-artifact-designer` is confirmed deferred — no file exists at `agents/agent-artifact-designer.md`; gate re-evaluated at M3 Phase 3 (Task 14) and still not met; all five artifact types (architecture-review, eval-scorecard, rollout-readiness, glossary, handoff) remain expressible with scalar substitution and block repetition only — no dynamic section selection, multi-table composition, or conditional rendering beyond `{{#SECTION}}...{{/SECTION}}` has been introduced
 
 ### Adapter gate (manual)
 
