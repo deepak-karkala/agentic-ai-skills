@@ -66,7 +66,7 @@ Use this table to decide whether to stay inline or delegate to a subagent. Deleg
 | `tool-interface-design` | — | none — stays inline | All analysis inline |
 | `single-agent-workflow-design` | — | none — stays inline | All analysis inline |
 | `agent-observability` | — | none — stays inline | All analysis inline |
-| `latency-and-cost-optimization` | — | none — stays inline | All analysis inline |
+| `latency-and-cost-optimization` | Detailed component-by-component cost and latency breakdown with caching/parallelization assessment; would exceed ~500 tokens inline | `agent-cost-performance-analyst` | Single bottleneck identified; user asking for guidance on one lever only |
 | `agentic-security` | — | none — stays inline | All analysis inline |
 | `incident-investigation` | Complex incident with multi-layer failure modes requiring structured classification before synthesis | `agent-reliability-engineer` | Single fault layer; user has already identified the cause |
 | `hallucination-containment` | Multiple hallucination modes active; evidence-based mode classification would exceed ~500 tokens inline | `agent-reliability-engineer` | Single mode identified; straightforward containment pattern |
